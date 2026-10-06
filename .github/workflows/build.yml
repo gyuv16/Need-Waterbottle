@@ -25,9 +25,15 @@ jobs:
         include:
           - os: windows-latest
             name: windows-exe
+            arch: x64
             files: out/make/squirrel.windows/**/*.exe
           - os: macos-latest
-            name: macos-dmg
+            name: macos-dmg-apple-silicon
+            arch: arm64
+            files: out/make/**/*.dmg
+          - os: macos-latest
+            name: macos-dmg-intel
+            arch: x64
             files: out/make/**/*.dmg
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +49,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Build installer
-        run: npm run make
+        run: npm run make -- --arch=${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -70,4 +76,4 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             dist/windows-exe/**/*.exe
-            dist/macos-dmg/**/*.dmg
+            dist/macos-dmg-*/**/*.dmg
