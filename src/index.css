@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fully transparent overlay */
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ---- Moves the whole avatar (sprite + bubble) left → right ---- */
+.walker {
+  animation: walk-across var(--walk-duration, 12s) linear forwards;
+}
+
+@keyframes walk-across {
+  from { transform: translateX(calc(-1 * var(--avatar-width, 128px) - 200px)); }
+  to   { transform: translateX(calc(100vw + 200px)); }
+}
+
+/* ---- Cycles walking frames of a 1-row sprite sheet ----
+   steps(N) jumps through N frames; the end position equals the full
+   sheet width so the last step lands back on frame 0 seamlessly. */
+.sprite {
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  animation: walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite;
+}
+
+@keyframes walk-cycle {
+  from { background-position: 0 0; }
+  to   { background-position: calc(-1 * var(--sprite-sheet-width, 512px)) 0; }
+}
+
+/* Gentle pop-in + bob for the bubble */
+.bubble-pop {
+  animation: pop 0.35s ease-out both, bob 1.2s ease-in-out 0.35s infinite;
+}
+@keyframes pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
