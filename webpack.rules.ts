@@ -1,12 +1,19 @@
 import type { ModuleOptions } from 'webpack';
 
-export const rules: Required<ModuleOptions>['rules'] = [
+type Rules = Required<ModuleOptions>['rules'];
+
+// Native-module helpers rely on Node globals such as __dirname, so they must
+// only be used for the main process, never for the sandboxed renderer.
+export const nativeRules: Rules = [
   { test: /native_modules[/\\].+\.node$/, use: 'node-loader' },
   {
     test: /[/\\]node_modules[/\\].+\.(m?js|node)$/,
     parser: { amd: false },
     use: { loader: '@vercel/webpack-asset-relocator-loader', options: { outputAssetBase: 'native_modules' } },
   },
+];
+
+export const rules: Rules = [
   {
     test: /\.tsx?$/,
     exclude: /(node_modules|\.webpack)/,

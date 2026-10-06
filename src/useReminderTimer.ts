@@ -10,6 +10,9 @@ export function useReminderTimer(intervalMs: number, walkMs: number) {
     return () => clearInterval(id);
   }, [intervalMs]);
 
+  // "Remind me now" from the tray menu.
+  useEffect(() => window.waterBuddy?.onRemindNow(() => setWalking(true)), []);
+
   // Safety net in case animationend is missed.
   useEffect(() => {
     if (!walking) return;

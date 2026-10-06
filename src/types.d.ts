@@ -6,5 +6,8 @@ declare module '*.png' { const src: string; export default src; }
 declare module '*.svg' { const src: string; export default src; }
 
 interface Window {
-  waterBuddy: { platform: NodeJS.Platform };
+  waterBuddy: {
+    platform: NodeJS.Platform;
+    onRemindNow: (callback: () => void) => () => void;
+  };
 }
