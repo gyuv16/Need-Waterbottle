@@ -25,11 +25,11 @@ const config: ForgeConfig = {
       setupExe: 'WaterBuddySetup.exe',
       authors: 'gyuv16',
     }),
-    // macOS → out/make/WaterBuddy-1.0.0-<arch>.dmg
-    new MakerDMG({
-      name: 'WaterBuddy',
+    // Name includes the arch so Apple Silicon (arm64) and Intel (x64) builds don't collide.
+    new MakerDMG((arch) => ({
+      name: `WaterBuddy-${arch}`,
       format: 'ULFO',
-    }),
+    })),
     new MakerZIP({}, ['darwin']),
   ],
   plugins: [
