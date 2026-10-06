@@ -23,6 +23,7 @@ const config: ForgeConfig = {
     new MakerSquirrel({
       name: 'WaterBuddy',
       setupExe: 'WaterBuddySetup.exe',
+      authors: 'gyuv16',
     }),
     // macOS → out/make/WaterBuddy-1.0.0-<arch>.dmg
     new MakerDMG({
