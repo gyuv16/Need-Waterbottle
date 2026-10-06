@@ -34,6 +34,7 @@ Every push to `main` builds the Windows `.exe` and macOS `.dmg` on GitHub Action
 To publish a release with both installers attached:
 ```bash
 git tag v1.0.0 && git push origin v1.0.0
+# or: Actions → Build installers → Run workflow → release_tag = v1.0.0
 ```
 
 ## Configuration

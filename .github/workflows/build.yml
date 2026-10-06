@@ -6,6 +6,11 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Create a GitHub Release with this tag (e.g. v1.0.0). Leave empty to only build.'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -46,8 +51,23 @@ jobs:
           path: ${{ matrix.files }}
           if-no-files-found: error
 
-      - name: Attach to GitHub Release (tags only)
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+  release:
+    name: Publish GitHub Release
+    needs: make
+    if: startsWith(github.ref, 'refs/tags/v') || inputs.release_tag != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          files: ${{ matrix.files }}
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag || github.ref_name }}
+          name: WaterBuddy ${{ inputs.release_tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            dist/windows-exe/**/*.exe
+            dist/macos-dmg/**/*.dmg
