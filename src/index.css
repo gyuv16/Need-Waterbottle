@@ -16,7 +16,16 @@ body,
 
 /* ---- Moves the whole avatar (sprite + bubble) left → right ---- */
 .walker {
-  animation: walk-across var(--walk-duration, 12s) linear forwards;
+  animation:
+    walk-across var(--walk-duration, 12s) linear forwards,
+    walker-fade var(--walk-duration, 12s) linear forwards;
+}
+
+/* Soft fade at both screen edges */
+@keyframes walker-fade {
+  0%       { opacity: 0; }
+  6%, 94%  { opacity: 1; }
+  100%     { opacity: 0; }
 }
 
 @keyframes walk-across {
@@ -31,7 +40,30 @@ body,
   background-repeat: no-repeat;
   background-position: 0 0;
   image-rendering: pixelated;
-  animation: walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite;
+  animation:
+    walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite,
+    stride-bob 0.3s ease-in-out infinite;
+}
+
+/* Body rises slightly on each step (two steps per walk cycle) */
+@keyframes stride-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+/* Ground shadow that breathes with the stride */
+.ground-shadow {
+  width: 55%;
+  height: 12px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  filter: blur(3px);
+  animation: shadow-breathe 0.3s ease-in-out infinite;
+}
+@keyframes shadow-breathe {
+  0%, 100% { transform: scaleX(1);    opacity: 0.9; }
+  50%      { transform: scaleX(0.85); opacity: 0.6; }
 }
 
 @keyframes walk-cycle {
@@ -50,4 +82,11 @@ body,
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-4px); }
+}
+
+/* Respect the OS "reduce motion" setting: keep the walk, drop the extras */
+@media (prefers-reduced-motion: reduce) {
+  .sprite { animation: walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite; }
+  .ground-shadow { animation: none; }
+  .bubble-pop { animation: pop 0.35s ease-out both; }
 }
