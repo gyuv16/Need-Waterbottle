@@ -14,81 +14,212 @@ body,
   user-select: none;
 }
 
-/* ---- Moves the whole avatar (sprite + bubble) left → right ---- */
-.walker {
-  animation:
-    walk-across var(--walk-duration, 12s) linear forwards,
-    walker-fade var(--walk-duration, 12s) linear forwards;
+/* ---------- Stage ---------- */
+.scene {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 56px;
+  height: 320px;
+  font-family: -apple-system, 'Segoe UI', Inter, Arial, sans-serif;
 }
-
-/* Soft fade at both screen edges */
-@keyframes walker-fade {
-  0%       { opacity: 0; }
-  6%, 94%  { opacity: 1; }
-  100%     { opacity: 0; }
+.actor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  will-change: transform;
 }
+.actor--cat { width: 220px; z-index: 1; }
+.actor--mouse { width: 120px; z-index: 2; bottom: 4px; }
+.cat-facing { transform-origin: center; }
+.cat-facing--left { transform: scaleX(-1); }
 
-@keyframes walk-across {
-  from { transform: translateX(calc(-1 * var(--avatar-width, 128px) - 200px)); }
-  to   { transform: translateX(calc(100vw + 200px)); }
-}
-
-/* ---- Cycles walking frames of a 1-row sprite sheet ----
-   steps(N) jumps through N frames; the end position equals the full
-   sheet width so the last step lands back on frame 0 seamlessly. */
-.sprite {
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  /* Thin white halo keeps Buddy visible on dark and light wallpapers */
-  filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 1px #fff) drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
-  image-rendering: pixelated;
-  animation:
-    walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite,
-    stride-bob 0.3s ease-in-out infinite;
-}
-
-/* Body rises slightly on each step (two steps per walk cycle) */
-@keyframes stride-bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-3px); }
-}
-
-/* Ground shadow that breathes with the stride */
+/* Soft contact shadows */
 .ground-shadow {
-  width: 55%;
-  height: 12px;
-  margin-top: -8px;
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 150px;
+  height: 16px;
+  margin-left: -75px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.28);
-  filter: blur(3px);
-  animation: shadow-breathe 0.3s ease-in-out infinite;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
 }
-@keyframes shadow-breathe {
-  0%, 100% { transform: scaleX(1);    opacity: 0.9; }
-  50%      { transform: scaleX(0.85); opacity: 0.6; }
-}
-
-@keyframes walk-cycle {
-  from { background-position: 0 0; }
-  to   { background-position: calc(-1 * var(--sprite-sheet-width, 512px)) 0; }
+.ground-shadow--run { animation: shadow-run calc(var(--step) * 0.5) ease-in-out infinite; }
+@keyframes shadow-run {
+  0%, 100% { transform: scaleX(1); opacity: 0.9; }
+  50%      { transform: scaleX(0.75); opacity: 0.5; }
 }
 
-/* Gentle pop-in + bob for the bubble */
-.bubble-pop {
-  animation: pop 0.35s ease-out both, bob 1.2s ease-in-out 0.35s infinite;
+.cat, .mouse { overflow: visible; display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); }
+
+/* Body parts rotate around their own top/centre */
+.cat-leg, .mouse-leg { transform-box: fill-box; transform-origin: 50% 8%; }
+.cat-tail { transform-box: fill-box; transform-origin: 95% 95%; }
+.cat-head { transform-box: fill-box; transform-origin: 20% 90%; transition: transform 0.4s ease; }
+.cat-ear { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.4s ease; }
+.cat-body { transform-box: fill-box; transform-origin: 50% 50%; }
+
+/* ---------- Cat: walking in ---------- */
+.cat--walk .cat-leg--a { animation: leg-swing calc(var(--step) * 2) ease-in-out infinite; }
+.cat--walk .cat-leg--b { animation: leg-swing calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
+.cat--walk .cat-body,
+.cat--walk .cat-head { animation: body-bob var(--step) ease-in-out infinite; }
+.cat--walk .cat-tail { animation: tail-sway calc(var(--step) * 4) ease-in-out infinite; }
+@keyframes leg-swing {
+  0%, 100% { transform: rotate(20deg); }
+  50%      { transform: rotate(-20deg); }
 }
-@keyframes pop {
-  from { transform: scale(0.4); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-@keyframes bob {
+@keyframes body-bob {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
+  50%      { transform: translateY(-2.5px); }
+}
+@keyframes tail-sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50%      { transform: rotate(8deg); }
 }
 
-/* Respect the OS "reduce motion" setting: keep the walk, drop the extras */
+/* ---------- Cat: asking ---------- */
+.cat--ask .cat-head { transform: rotate(-6deg); }
+.cat--ask .cat-tail { animation: tail-sway 1.6s ease-in-out infinite; }
+.cat--ask .cat-ear--front { animation: ear-twitch 3s ease-in-out infinite; }
+.cat--ask .cat-body { animation: breathe 2.4s ease-in-out infinite; }
+@keyframes ear-twitch {
+  0%, 85%, 100% { transform: rotate(0); }
+  90%           { transform: rotate(-12deg); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.015, 1.03); }
+}
+
+/* ---------- Cat: full-energy chase ---------- */
+.cat--run .cat-leg--a { animation: leg-dash calc(var(--step) * 0.6) linear infinite; }
+.cat--run .cat-leg--b { animation: leg-dash calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
+.cat--run .cat-body { animation: run-stretch calc(var(--step) * 0.6) ease-in-out infinite; }
+.cat--run .cat-head { transform: rotate(6deg) translateX(4px); }
+.cat--run .cat-ear { transform: rotate(-25deg); }
+.cat--run .cat-tail { transform: rotate(40deg); }
+@keyframes leg-dash {
+  0%, 100% { transform: rotate(45deg); }
+  50%      { transform: rotate(-45deg); }
+}
+@keyframes run-stretch {
+  0%, 100% { transform: scale(1.06, 0.95) translateY(0); }
+  50%      { transform: scale(0.97, 1.03) translateY(-6px); }
+}
+
+/* ---------- Cat: sad walk home ---------- */
+.cat--sad .cat-leg--a { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out infinite; }
+.cat--sad .cat-leg--b { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out calc(var(--step) * -1.6) infinite; }
+.cat--sad .cat-head { transform: rotate(14deg) translateY(10px); }
+.cat--sad .cat-ear { transform: rotate(30deg) translateY(4px); }
+.cat--sad .cat-tail { transform: rotate(-55deg) translateY(10px); }
+.cat--sad .cat-body { animation: body-bob calc(var(--step) * 1.6) ease-in-out infinite; }
+.cat-tear { animation: tear-fall 1.8s ease-in infinite; }
+@keyframes leg-swing-slow {
+  0%, 100% { transform: rotate(12deg); }
+  50%      { transform: rotate(-12deg); }
+}
+@keyframes tear-fall {
+  0%   { transform: translateY(0); opacity: 0.9; }
+  100% { transform: translateY(16px); opacity: 0; }
+}
+
+/* ---------- Mouse ---------- */
+.mouse--peek { animation: mouse-appear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.mouse--peek .mouse-head { transform-box: fill-box; transform-origin: 30% 90%; animation: sniff 1.4s ease-in-out infinite; }
+.mouse--peek .mouse-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: tail-sway 1.2s ease-in-out infinite; }
+@keyframes mouse-appear {
+  from { transform: translateX(-30px) scale(0.6); opacity: 0; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+@keyframes sniff {
+  0%, 100% { transform: rotate(0); }
+  25%      { transform: rotate(-4deg) translateY(-1px); }
+  50%      { transform: rotate(2deg); }
+}
+.mouse--run .mouse-leg--a { animation: leg-dash calc(var(--step) * 0.4) linear infinite; }
+.mouse--run .mouse-leg--b { animation: leg-dash calc(var(--step) * 0.4) linear calc(var(--step) * -0.2) infinite; }
+.mouse--run .mouse-body,
+.mouse--run .mouse-head { animation: body-bob calc(var(--step) * 0.4) ease-in-out infinite; }
+.mouse--hide { animation: mouse-hide 0.6s ease-in forwards; }
+@keyframes mouse-hide {
+  to { transform: translateX(-40px) scale(0.5); opacity: 0; }
+}
+
+/* ---------- Speech bubbles ---------- */
+.bubble {
+  position: absolute;
+  left: 120px;
+  bottom: 168px;
+  min-width: 220px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 2px solid #f0bb69;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  color: #4a2f0e;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  animation: bubble-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 36px;
+  bottom: -10px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-right: 2px solid #f0bb69;
+  border-bottom: 2px solid #f0bb69;
+  transform: rotate(45deg);
+}
+.bubble p { margin: 0 0 10px; white-space: nowrap; }
+.bubble--short { min-width: 0; white-space: nowrap; font-size: 15px; }
+.bubble--sad { color: #6b4a2a; border-color: #c9b39a; }
+.bubble--sad::after { border-color: #c9b39a; }
+@keyframes bubble-pop {
+  from { transform: translateY(8px) scale(0.5); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.bubble--ask { pointer-events: auto; }
+.bubble-actions { display: flex; gap: 10px; justify-content: center; }
+.btn {
+  min-width: 80px;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:hover { transform: translateY(-2px) scale(1.04); }
+.btn:active { transform: scale(0.96); }
+.btn--yes { background: linear-gradient(180deg, #34d399, #059669); color: #fff; box-shadow: 0 6px 14px rgba(5, 150, 105, 0.4); }
+.btn--no  { background: #f1f5f9; color: #475569; box-shadow: inset 0 0 0 2px #cbd5e1; }
+
+.mini-bubble {
+  position: absolute;
+  left: 60px;
+  bottom: 84px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: bubble-pop 0.3s ease-out both;
+}
+
+/* Respect the OS "reduce motion" setting: keep movement, drop the extras */
 @media (prefers-reduced-motion: reduce) {
-  .sprite { animation: walk-cycle 0.6s steps(var(--sprite-frames, 4)) infinite; }
-  .ground-shadow { animation: none; }
-  .bubble-pop { animation: pop 0.35s ease-out both; }
+  .cat *, .mouse * { animation: none !important; }
+  .bubble, .mini-bubble { animation: none; }
 }
