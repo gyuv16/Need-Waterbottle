@@ -29,6 +29,13 @@ npm run make         # builds installers for the OS you're on
 
 You must build the `.dmg` on a Mac. Build the `.exe` on Windows; on macOS or Linux you can build it only with Wine and Mono installed. For public distribution, sign the apps. On macOS, also notarize the app (`osxSign` / `osxNotarize` in `packagerConfig`).
 
+## CI builds
+Every push to `main` builds the Windows `.exe` and macOS `.dmg` on GitHub Actions (**Actions → Build installers → Artifacts**).
+To publish a release with both installers attached:
+```bash
+git tag v1.0.0 && git push origin v1.0.0
+```
+
 ## Configuration
 - `src/config.ts`: set the reminder interval, walk duration and sprite geometry.
 - `src/assets/walker.svg`: swap in your own one-row sprite sheet. Then update `frameWidth`, `frameHeight` and `frames`.
