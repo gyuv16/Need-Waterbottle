@@ -1,24 +1,25 @@
 import { useEffect, useState, useCallback } from 'react';
 
-/** Fires every `intervalMs`; returns whether the avatar is currently walking. */
-export function useReminderTimer(intervalMs: number, walkMs: number) {
-  const [walking, setWalking] = useState(false);
-  const stop = useCallback(() => setWalking(false), []);
+/** Fires every `intervalMs` (or on "Remind me now"); returns whether a reminder scene is showing. */
+export function useReminderTimer(intervalMs: number) {
+  const [showing, setShowing] = useState(false);
+  const [run, setRun] = useState(0);
+  const stop = useCallback(() => setShowing(false), []);
+
+  const start = useCallback(() => {
+    setShowing((already) => {
+      if (!already) setRun((n) => n + 1);
+      return true;
+    });
+  }, []);
 
   useEffect(() => {
-    const id = setInterval(() => setWalking(true), intervalMs);
+    const id = setInterval(start, intervalMs);
     return () => clearInterval(id);
-  }, [intervalMs]);
+  }, [intervalMs, start]);
 
   // "Remind me now" from the tray menu.
-  useEffect(() => window.waterBuddy?.onRemindNow(() => setWalking(true)), []);
+  useEffect(() => window.waterBuddy?.onRemindNow(start), [start]);
 
-  // Safety net in case animationend is missed.
-  useEffect(() => {
-    if (!walking) return;
-    const t = setTimeout(stop, walkMs + 500);
-    return () => clearTimeout(t);
-  }, [walking, walkMs, stop]);
-
-  return { walking, stop };
+  return { showing, run, stop };
 }

@@ -9,5 +9,6 @@ interface Window {
   waterBuddy: {
     platform: NodeJS.Platform;
     onRemindNow: (callback: () => void) => () => void;
+    setClickable: (clickable: boolean) => void;
   };
 }

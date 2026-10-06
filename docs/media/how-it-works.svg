@@ -1,74 +1,82 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="880" height="230" viewBox="0 0 880 230" font-family="-apple-system,'Segoe UI',Inter,Arial,sans-serif">
   <style>
-    .card{fill:#ffffff;stroke:#d6e6f5;stroke-width:2}
-    .t{font-size:16px;font-weight:700;fill:#0f2a44}
-    .s{font-size:12.5px;fill:#5a6b7d}
+    .card{fill:#ffffff;stroke:#f3dcb4;stroke-width:2}
+    .t{font-size:16px;font-weight:700;fill:#4a2f0e}
+    .s{font-size:12.5px;fill:#7a6650}
     .n{font-size:12px;font-weight:700;fill:#ffffff}
     .step{opacity:.35;animation:lit 10s infinite}
     .s1{animation-delay:0s}.s2{animation-delay:2.5s}.s3{animation-delay:5s}.s4{animation-delay:7.5s}
     @keyframes lit{0%{opacity:.35}3%,22%{opacity:1}27%,100%{opacity:.35}}
     .bar{animation:grow 10s linear infinite;transform-origin:0 0}
     @keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-    .tick{animation:spin 2.5s linear infinite;transform-origin:110px 82px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .walk{animation:walk 2.5s ease-in-out infinite}
-    @keyframes walk{0%{transform:translateX(-14px)}50%{transform:translateX(14px)}100%{transform:translateX(-14px)}}
-    .pop{animation:pop 2.5s ease-in-out infinite;transform-origin:550px 80px}
-    @keyframes pop{0%,100%{transform:scale(.92)}50%{transform:scale(1.06)}}
-    .fade{animation:fade 2.5s ease-in-out infinite}
-    @keyframes fade{0%,100%{opacity:1}50%{opacity:.25}}
+    .paws{animation:paws 2.5s steps(4) infinite}
+    @keyframes paws{from{transform:translateX(-18px)}to{transform:translateX(18px)}}
+    .pop{animation:pop 2.5s ease-in-out infinite;transform-origin:547px 78px}
+    @keyframes pop{0%,100%{transform:scale(.94)}50%{transform:scale(1.05)}}
+    .dash{animation:dash 1.2s linear infinite}
+    @keyframes dash{0%{transform:translateX(-16px)}100%{transform:translateX(16px)}}
+    .droop{animation:droop 2.5s ease-in-out infinite}
+    @keyframes droop{0%,100%{transform:translateX(8px)}50%{transform:translateX(-8px)}}
   </style>
-  <rect width="880" height="230" rx="18" fill="#f3f9ff"/>
+  <defs>
+    <radialGradient id="gold" cx="45%" cy="35%" r="70%"><stop offset="0%" stop-color="#ffe7b3"/><stop offset="60%" stop-color="#f1bd6b"/><stop offset="100%" stop-color="#c58635"/></radialGradient>
+  </defs>
+  <rect width="880" height="230" rx="18" fill="#fff8ec"/>
 
   <g class="step s1">
     <rect class="card" x="20" y="22" width="190" height="170" rx="16"/>
-    <circle cx="110" cy="82" r="30" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
-    <line class="tick" x1="110" y1="82" x2="110" y2="62" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/>
-    <line x1="110" y1="82" x2="124" y2="82" stroke="#0369a1" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="44" cy="44" r="12" fill="#0284c7"/><text class="n" x="44" y="48" text-anchor="middle">1</text>
-    <text class="t" x="115" y="145" text-anchor="middle">Quietly waits</text>
-    <text class="s" x="115" y="166" text-anchor="middle">Invisible while you work</text>
-    <text class="s" x="115" y="182" text-anchor="middle">for the next hour</text>
+    <g class="paws" fill="#e3a653">
+      <g transform="translate(78 92)"><ellipse rx="7" ry="6"/><circle cx="-7" cy="-8" r="2.6"/><circle cx="-1" cy="-11" r="2.6"/><circle cx="6" cy="-9" r="2.6"/></g>
+      <g transform="translate(110 76)"><ellipse rx="7" ry="6"/><circle cx="-7" cy="-8" r="2.6"/><circle cx="-1" cy="-11" r="2.6"/><circle cx="6" cy="-9" r="2.6"/></g>
+      <g transform="translate(142 92)"><ellipse rx="7" ry="6"/><circle cx="-7" cy="-8" r="2.6"/><circle cx="-1" cy="-11" r="2.6"/><circle cx="6" cy="-9" r="2.6"/></g>
+    </g>
+    <circle cx="44" cy="44" r="12" fill="#e0862a"/><text class="n" x="44" y="48" text-anchor="middle">1</text>
+    <text class="t" x="115" y="145" text-anchor="middle">Whiskers walks in</text>
+    <text class="s" x="115" y="166" text-anchor="middle">Every hour, a golden Persian</text>
+    <text class="s" x="115" y="182" text-anchor="middle">strolls in from the left</text>
   </g>
 
   <g class="step s2">
     <rect class="card" x="236" y="22" width="190" height="170" rx="16"/>
-    <g class="walk" stroke="#1e3a5f" stroke-width="3" stroke-linecap="round" fill="none">
-      <circle cx="331" cy="58" r="9" fill="#ffd9b3"/>
-      <line x1="331" y1="67" x2="331" y2="92"/><line x1="331" y1="92" x2="321" y2="114"/><line x1="331" y1="92" x2="341" y2="114"/>
-      <line x1="331" y1="74" x2="320" y2="86"/><line x1="331" y1="74" x2="343" y2="84"/>
-      <rect x="341" y="76" width="8" height="14" rx="2" fill="#38a0f0" stroke-width="1.5"/>
-    </g>
-    <circle cx="260" cy="44" r="12" fill="#0284c7"/><text class="n" x="260" y="48" text-anchor="middle">2</text>
-    <text class="t" x="331" y="145" text-anchor="middle">Buddy walks in</text>
-    <text class="s" x="331" y="166" text-anchor="middle">Strolls across your screen,</text>
-    <text class="s" x="331" y="182" text-anchor="middle">even over full-screen apps</text>
+    <rect x="262" y="46" width="138" height="66" rx="14" fill="#ffffff" stroke="#f0bb69" stroke-width="2"/>
+    <text x="331" y="68" text-anchor="middle" font-size="12" font-weight="700" fill="#4a2f0e">Did you drink water?</text>
+    <rect x="276" y="80" width="50" height="22" rx="11" fill="#10b981"/><text x="301" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">Yes</text>
+    <rect x="336" y="80" width="50" height="22" rx="11" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/><text x="361" y="95" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">No</text>
+    <circle cx="260" cy="44" r="12" fill="#e0862a"/><text class="n" x="260" y="48" text-anchor="middle">2</text>
+    <text class="t" x="331" y="145" text-anchor="middle">Asks the question</text>
+    <text class="s" x="331" y="166" text-anchor="middle">Pip the mouse peeks out</text>
+    <text class="s" x="331" y="182" text-anchor="middle">and waits for your answer</text>
   </g>
 
   <g class="step s3">
     <rect class="card" x="452" y="22" width="190" height="170" rx="16"/>
-    <g class="pop">
-      <rect x="482" y="58" width="136" height="40" rx="20" fill="#ffffff" stroke="#38bdf8" stroke-width="2.5"/>
-      <path d="M543 97 l7 9 l7 -9" fill="#ffffff" stroke="#38bdf8" stroke-width="2.5" stroke-linejoin="round"/>
-      <rect x="543" y="94" width="14" height="5" fill="#ffffff"/>
-      <text x="550" y="83" text-anchor="middle" font-size="13" font-weight="700" fill="#0369a1">Drink water!</text>
+    <g class="dash">
+      <path d="M492 72 h22 M486 84 h26 M494 96 h18" stroke="#f0bb69" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="540" cy="84" rx="20" ry="13" fill="url(#gold)"/><circle cx="560" cy="74" r="12" fill="url(#gold)"/>
+      <path d="M594 80 h14 M598 90 h10" stroke="#d1d5db" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="610" cy="88" rx="11" ry="7" fill="#ffffff" stroke="#d1d5db"/><circle cx="620" cy="80" r="7" fill="#f6b3c2" stroke="#e5e7eb"/>
     </g>
-    <circle cx="476" cy="44" r="12" fill="#0284c7"/><text class="n" x="476" y="48" text-anchor="middle">3</text>
-    <text class="t" x="547" y="145" text-anchor="middle">Friendly nudge</text>
-    <text class="s" x="547" y="166" text-anchor="middle">A speech bubble reminds</text>
-    <text class="s" x="547" y="182" text-anchor="middle">you to take a sip</text>
+    <circle cx="476" cy="44" r="12" fill="#10b981"/><text class="n" x="476" y="48" text-anchor="middle">3</text>
+    <text class="t" x="547" y="145" text-anchor="middle">Yes: the chase!</text>
+    <text class="s" x="547" y="166" text-anchor="middle">Pip dashes off and Whiskers</text>
+    <text class="s" x="547" y="182" text-anchor="middle">chases at full speed</text>
   </g>
 
   <g class="step s4">
     <rect class="card" x="668" y="22" width="190" height="170" rx="16"/>
-    <path class="fade" d="M763 50 C763 50 740 78 740 94 a23 23 0 0 0 46 0 C786 78 763 50 763 50 Z" fill="#7dd3fc" stroke="#0284c7" stroke-width="3"/>
-    <path d="M752 98 l7 7 l14 -16" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="692" cy="44" r="12" fill="#0284c7"/><text class="n" x="692" y="48" text-anchor="middle">4</text>
-    <text class="t" x="763" y="145" text-anchor="middle">Gone again</text>
-    <text class="s" x="763" y="166" text-anchor="middle">Never steals a click</text>
-    <text class="s" x="763" y="182" text-anchor="middle">or interrupts typing</text>
+    <g class="droop">
+      <circle cx="763" cy="80" r="26" fill="url(#gold)"/>
+      <path d="M750 76 q5 -4 10 0 M767 76 q5 -4 10 0" stroke="#5a3a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M754 94 q9 -7 18 0" stroke="#5a3a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M778 82 q3 6 0 9 q-3 -3 0 -9 Z" fill="#9ddcff"/>
+      <path d="M716 112 h-14 l6 -6 M702 112 l6 6" stroke="#c9b39a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+    <circle cx="692" cy="44" r="12" fill="#94a3b8"/><text class="n" x="692" y="48" text-anchor="middle">4</text>
+    <text class="t" x="763" y="145" text-anchor="middle">No: a sad walk home</text>
+    <text class="s" x="763" y="166" text-anchor="middle">Whiskers turns around and</text>
+    <text class="s" x="763" y="182" text-anchor="middle">slowly heads back left</text>
   </g>
 
-  <rect x="20" y="208" width="838" height="6" rx="3" fill="#dbeafe"/>
-  <rect class="bar" x="20" y="208" width="838" height="6" rx="3" fill="#0284c7"/>
+  <rect x="20" y="208" width="838" height="6" rx="3" fill="#fbe7c6"/>
+  <rect class="bar" x="20" y="208" width="838" height="6" rx="3" fill="#e0862a"/>
 </svg>

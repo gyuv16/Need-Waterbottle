@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, Tray, Menu, nativeImage } from 'electron';
+import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain } from 'electron';
 
 // Handle Squirrel install/uninstall shortcuts on Windows.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -39,6 +39,11 @@ function createOverlay(): void {
   overlay.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   // Fully click-through; mouse moves are still forwarded to the page.
   overlay.setIgnoreMouseEvents(true, { forward: true });
+
+  // Only the Yes / No buttons are clickable, and only while the pointer is over them.
+  ipcMain.on('set-clickable', (_event, clickable: boolean) => {
+    overlay?.setIgnoreMouseEvents(!clickable, { forward: true });
+  });
 
   overlay.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   overlay.on('closed', () => (overlay = null));

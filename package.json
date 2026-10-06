@@ -1,8 +1,8 @@
 {
   "name": "water-buddy",
   "productName": "WaterBuddy",
-  "version": "1.0.1",
-  "description": "Transparent always-on-top desktop water reminder with a walking avatar",
+  "version": "1.1.0",
+  "description": "Desktop water reminder: a golden Persian cat asks if you drank water",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",

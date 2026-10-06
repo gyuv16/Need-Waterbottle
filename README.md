@@ -2,68 +2,74 @@
 
 # 💧 WaterBuddy
 
-**A tiny walking companion that reminds you to drink water without interrupting your work.**
+**A golden Persian cat and a little white mouse who make sure you drink water.**
 
-<img src="docs/media/demo.gif" alt="WaterBuddy walking across the desktop with a 'Time to drink water!' bubble while the user keeps working in a spreadsheet" width="720">
+<img src="docs/media/demo-yes.gif" alt="Whiskers the golden Persian cat asks 'Did you drink water?', the user clicks Yes, and Whiskers chases Pip the white mouse across the screen" width="880">
 
-<sub>Every hour, Buddy strolls across your screen with a friendly reminder. You keep clicking and typing as usual.</sub>
+<sub>Every hour, Whiskers walks in and asks if you've had water. Say <b>Yes</b> and the chase is on!</sub>
 
 [![Build installers](https://github.com/gyuv16/Need-Waterbottle/actions/workflows/build.yml/badge.svg)](https://github.com/gyuv16/Need-Waterbottle/actions/workflows/build.yml)
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?logo=windows&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-Apple%20Silicon%20%7C%20Intel-000000?logo=apple&logoColor=white)
 
-[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [Screenshots](#screenshots) · [How it works](#how-it-works) · [Features](#features) · [FAQ](#faq)
+[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [Meet the cast](#meet-the-cast) · [How it works](#how-it-works) · [Screenshots](#screenshots) · [FAQ](#faq)
 
 </div>
 
 ---
 
-## Screenshots
-
-<table>
-  <tr>
-    <td align="center"><img src="docs/screenshots/macos.png" alt="Buddy walking above the Dock on macOS with the 'Time to drink water!' bubble" width="440"><br><sub><b>macOS</b>: Buddy strolls past the Dock</sub></td>
-    <td align="center"><img src="docs/screenshots/windows.png" alt="Buddy walking above the taskbar on Windows with the 'Time to drink water!' bubble" width="440"><br><sub><b>Windows</b>: Buddy walks above the taskbar</sub></td>
-  </tr>
-</table>
+## Meet the cast
 
 <p align="center">
-  <img src="docs/screenshots/closeup.png" alt="Close-up of Buddy with the speech bubble, a soft halo and a ground shadow" width="300"><br>
-  <sub>A soft halo keeps Buddy easy to see on both light and dark wallpapers.</sub>
+  <img src="docs/screenshots/closeup.png" alt="Whiskers the golden Persian cat asking 'Did you drink water?' with Yes and No buttons while Pip the white mouse peeks out from behind" width="460">
 </p>
 
-<sub>Captured from the running app and placed on sample desktops.</sub>
+| | |
+|---|---|
+| 🐈 **Whiskers** | A fluffy golden Persian cat with copper eyes and a bushy tail. Whiskers cares about your hydration. |
+| 🐁 **Pip** | A tiny white mouse with big pink ears. Pip loves a good chase. |
 
 ## How it works
 
 <p align="center">
-  <img src="docs/media/how-it-works.svg" alt="Four steps: quietly waits, Buddy walks in, friendly nudge, gone again" width="880">
+  <img src="docs/media/how-it-works.svg" alt="Four steps: Whiskers walks in, asks the question, Yes starts the chase, No sends Whiskers home sadly" width="880">
 </p>
 
-1. **Quietly waits.** Once you open WaterBuddy, it stays out of sight. There's no window to manage and nothing in your taskbar or Dock.
-2. **Buddy walks in.** Every hour, a little character walks onto your screen from the left. It appears on top of everything, even full-screen videos, presentations and spreadsheets, and on every desktop or Space you use.
-3. **Friendly nudge.** A speech bubble pops up above Buddy: **"Time to drink water!"** That's your cue to take a sip.
-4. **Gone again.** Buddy walks off the right edge and disappears until the next hour. You can keep working the whole time, because Buddy never blocks your mouse or keyboard.
+1. **Whiskers walks in.** Every hour, Whiskers strolls in from the left edge of your screen. The walk is split into 100 steps.
+2. **The question.** After 20 steps, Whiskers stops, and a bubble pops up above Whiskers' head: **"Did you drink water?"** with **Yes** and **No** buttons. Pip peeks out from behind Whiskers and waits for your answer.
+3. **Yes: the chase!** Pip dashes off to the right, and Whiskers chases after Pip at full speed until they're both off the screen.
+4. **No: a sad walk home.** Whiskers' ears droop and a tear falls. Whiskers turns around and walks slowly back to the left. If you don't answer within a minute, Whiskers heads home the same way.
 
-## Meet Buddy
+Only the two buttons can be clicked. Everywhere else, your clicks and typing go straight to whatever you're working on.
+
+### If you say No
 
 <p align="center">
-  <img src="docs/media/stride.gif" alt="Close-up of Buddy's walking animation, holding a water bottle" width="420">
+  <img src="docs/media/demo-no.gif" alt="The user clicks No; Pip hides and Whiskers turns around and walks sadly back to the left" width="880">
 </p>
 
-Buddy carries a water bottle and walks with a smooth, looping stride. The speech bubble pops in with a little bounce and gently bobs while Buddy walks, so you notice it without being startled.
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/macos.png" alt="Whiskers asking 'Did you drink water?' on a macOS desktop" width="440"><br><sub><b>macOS</b>: Whiskers asks the question</sub></td>
+    <td align="center"><img src="docs/screenshots/windows.png" alt="Whiskers walking sadly back to the left on a Windows desktop" width="440"><br><sub><b>Windows</b>: the sad walk home after "No"</sub></td>
+  </tr>
+</table>
+
+<sub>Captured from the running app and placed on sample desktops.</sub>
 
 ## Features
 
 | | |
 |---|---|
-| 🚶 **Animated companion** | A friendly character walks across your screen every hour |
-| 🖱️ **Never in the way** | Clicks and typing pass straight through; you never have to dismiss anything |
+| 🐈 **Animated story** | A cat-and-mouse reminder that plays out on your desktop every hour |
+| ✅ **Yes / No answer** | Tell Whiskers whether you've had water, and get a happy chase or a sad goodbye |
+| 🖱️ **Never in the way** | Only the two buttons are clickable; everything else clicks straight through |
 | 🖥️ **Always visible** | Appears over full-screen apps and on every virtual desktop or Space |
 | 👻 **Invisible otherwise** | No window, no taskbar button, no Dock icon |
-| ⏯️ **Remind me now** | Send Buddy out instantly from the tray or menu-bar icon |
-| 💧 **Easy to quit** | Use the water-drop icon in the system tray (Windows) or menu bar (macOS) |
-| 🪶 **Lightweight** | Sits idle between reminders |
+| ⏯️ **Remind me now** | Start the scene instantly from the tray or menu-bar icon |
+| ♿ **Reduced motion** | Respects your system's reduce-motion setting |
 | 💻 **Cross-platform** | Windows 10/11, plus macOS on Apple Silicon and Intel |
 
 ## Download & install
@@ -96,16 +102,17 @@ Not sure which Mac you have? Click  → **About This Mac**. If **Chip** says *Ap
 
 ## Using WaterBuddy
 
-- **Start:** it starts on its own after installation. To start it again later, open WaterBuddy from the Start menu or the Applications folder.
-- **Reminders:** Buddy appears once every hour.
-- **Remind me now:** click the 💧 icon → **Remind me now** to send Buddy out straight away.
+- **Start:** it starts after installation. To start it again later, open WaterBuddy from the Start menu or the Applications folder.
+- **Reminders:** Whiskers visits once every hour.
+- **Remind me now:** click the 💧 icon → **Remind me now** to start the scene straight away.
+- **Answer:** click **Yes** or **No** in Whiskers' speech bubble. With no answer within a minute, Whiskers walks home.
 - **Quit:** click the 💧 icon in the tray or menu bar → **Quit WaterBuddy**.
 
 ## FAQ
 
 <details>
 <summary><b>Will it interrupt my presentation or video call?</b></summary>
-Buddy is visible on top of other windows, but it never takes over your mouse or keyboard. Your clicks and typing keep working as normal. If you're sharing your whole screen, other people will see Buddy too, so you may want to quit WaterBuddy before presenting.
+Whiskers appears on top of other windows, but only the Yes and No buttons take clicks. Everything else keeps working as normal. If you're sharing your whole screen, other people will see Whiskers too, so you may want to quit WaterBuddy before presenting.
 </details>
 
 <details>
@@ -130,7 +137,7 @@ The installers aren't code-signed yet, so Windows and macOS show a one-time warn
 
 ```bash
 npm install
-npm start      # preview (Buddy appears every 10 seconds)
+npm start      # preview (Whiskers appears every 10 seconds)
 npm run make   # create an installer for the current OS
 ```
 
