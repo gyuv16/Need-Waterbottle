@@ -34,6 +34,7 @@ export default function Avatar({ durationMs, onFinish }: Props) {
     >
       <SpeechBubble text="Time to drink water!" />
       <div className="sprite" style={spriteStyle} />
+      <div className="ground-shadow" />
     </div>
   );
 }
