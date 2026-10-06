@@ -1,7 +1,7 @@
 {
   "name": "water-buddy",
   "productName": "WaterBuddy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Transparent always-on-top desktop water reminder with a walking avatar",
   "main": ".webpack/main",
   "scripts": {

@@ -12,11 +12,27 @@
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?logo=windows&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-Apple%20Silicon%20%7C%20Intel-000000?logo=apple&logoColor=white)
 
-[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [How it works](#how-it-works) · [Features](#features) · [FAQ](#faq)
+[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [Screenshots](#screenshots) · [How it works](#how-it-works) · [Features](#features) · [FAQ](#faq)
 
 </div>
 
 ---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/macos.png" alt="Buddy walking above the Dock on macOS with the 'Time to drink water!' bubble" width="440"><br><sub><b>macOS</b>: Buddy strolls past the Dock</sub></td>
+    <td align="center"><img src="docs/screenshots/windows.png" alt="Buddy walking above the taskbar on Windows with the 'Time to drink water!' bubble" width="440"><br><sub><b>Windows</b>: Buddy walks above the taskbar</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/screenshots/closeup.png" alt="Close-up of Buddy with the speech bubble, a soft halo and a ground shadow" width="300"><br>
+  <sub>A soft halo keeps Buddy easy to see on both light and dark wallpapers.</sub>
+</p>
+
+<sub>Captured from the running app and placed on sample desktops.</sub>
 
 ## How it works
 
@@ -45,6 +61,7 @@ Buddy carries a water bottle and walks with a smooth, looping stride. The speech
 | 🖱️ **Never in the way** | Clicks and typing pass straight through; you never have to dismiss anything |
 | 🖥️ **Always visible** | Appears over full-screen apps and on every virtual desktop or Space |
 | 👻 **Invisible otherwise** | No window, no taskbar button, no Dock icon |
+| ⏯️ **Remind me now** | Send Buddy out instantly from the tray or menu-bar icon |
 | 💧 **Easy to quit** | Use the water-drop icon in the system tray (Windows) or menu bar (macOS) |
 | 🪶 **Lightweight** | Sits idle between reminders |
 | 💻 **Cross-platform** | Windows 10/11, plus macOS on Apple Silicon and Intel |
@@ -81,6 +98,7 @@ Not sure which Mac you have? Click  → **About This Mac**. If **Chip** says *Ap
 
 - **Start:** it starts on its own after installation. To start it again later, open WaterBuddy from the Start menu or the Applications folder.
 - **Reminders:** Buddy appears once every hour.
+- **Remind me now:** click the 💧 icon → **Remind me now** to send Buddy out straight away.
 - **Quit:** click the 💧 icon in the tray or menu bar → **Quit WaterBuddy**.
 
 ## FAQ

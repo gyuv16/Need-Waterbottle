@@ -51,7 +51,13 @@ function createTray(): void {
   );
   tray = new Tray(icon);
   tray.setToolTip('WaterBuddy – stay hydrated');
-  tray.setContextMenu(Menu.buildFromTemplate([{ label: 'Quit WaterBuddy', click: () => app.quit() }]));
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      { label: 'Remind me now', click: () => overlay?.webContents.send('remind-now') },
+      { type: 'separator' },
+      { label: 'Quit WaterBuddy', click: () => app.quit() },
+    ]),
+  );
 }
 
 app.whenReady().then(() => {
