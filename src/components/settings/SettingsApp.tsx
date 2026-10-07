@@ -1,8 +1,20 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import catHead from '../../assets/mascot/cat-ask.webp';
-import PhotoEditor from './PhotoEditor';
+import PhotoEditor, { STYLE_OPTIONS } from './PhotoEditor';
+import Buddy from '../Buddy';
+import { stylize, type PhotoStyle } from './photo';
 import { useAppState } from '../../useAppState';
-import { LIMITS, inQuietHours, type Settings, type WalkSpeed } from '../../shared/settings';
+import { LABELS, headSrc, resolveLook } from '../../characters';
+import {
+  ANIMALS,
+  HUMAN_STYLES,
+  LIMITS,
+  inQuietHours,
+  type Accessory,
+  type OutfitStyle,
+  type Settings,
+  type Sex,
+  type WalkSpeed,
+} from '../../shared/settings';
 
 const INTERVALS = [15, 30, 45, 60, 90, 120];
 const SPEEDS: { value: WalkSpeed; label: string }[] = [
@@ -11,6 +23,68 @@ const SPEEDS: { value: WalkSpeed; label: string }[] = [
   { value: 'fast', label: '⚡ Fast' },
 ];
 const isMac = window.waterBuddy?.platform === 'darwin';
+const ACCESSORY_OPTIONS: { value: Accessory; icon: string; label: string }[] = [
+  { value: 'none', icon: '✖️', label: 'None' },
+  { value: 'bottle', icon: '🧴', label: 'Bottle' },
+  { value: 'scarf', icon: '🧣', label: 'Scarf' },
+  { value: 'backpack', icon: '🎒', label: 'Backpack' },
+  { value: 'bowtie', icon: '🎀', label: 'Bow tie' },
+];
+const SWATCHES = ['#ef4444', '#f97316', '#facc15', '#22c55e', '#0ea5e9', '#6366f1', '#a855f7', '#ec4899', '#f8fafc', '#334155', '#111827', '#92400e'];
+
+/** Re-apply a style (anime / comic / original) to the saved, unstyled face crop. */
+async function restyle(original: string, style: PhotoStyle): Promise<string> {
+  if (style === 'none') return original;
+  const img = new Image();
+  img.src = original;
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.width = img.width;
+  c.height = img.height;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return original;
+  ctx.drawImage(img, 0, 0);
+  stylize(ctx, c.width, c.height, style);
+  return c.toDataURL('image/png');
+}
+
+function Segmented({ value, options, onChange }: { value: string; options: { value: string; label: string }[]; onChange: (v: string) => void }) {
+  return (
+    <div className="grid gap-1 rounded-xl bg-slate-100 p-1" style={{ gridTemplateColumns: `repeat(${options.length}, 1fr)` }}>
+      {options.map((o) => (
+        <button
+          key={o.value}
+          onClick={() => onChange(o.value)}
+          className={`rounded-lg py-1.5 text-sm font-semibold transition ${value === o.value ? 'bg-white text-sky-700 shadow' : 'text-slate-500 hover:text-slate-700'}`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ColorPick({ label, value, onChange }: { label: string; value: string; onChange: (c: string) => void }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between text-xs font-semibold text-slate-600">
+        {label}
+        <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="h-6 w-8 cursor-pointer rounded border border-slate-300 bg-white" aria-label={`${label} custom colour`} />
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {SWATCHES.map((c) => (
+          <button
+            key={c}
+            onClick={() => onChange(c)}
+            aria-label={`${label} ${c}`}
+            className={`h-5 w-5 rounded-full border ${value.toLowerCase() === c ? 'ring-2 ring-sky-500 ring-offset-1' : 'border-slate-300'}`}
+            style={{ background: c }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function Section({ title, icon, children }: { title: string; icon: string; children: ReactNode }) {
   return (
@@ -80,6 +154,7 @@ export default function SettingsApp() {
   if (!loaded) return <div className="p-8 text-slate-500">Loading…</div>;
 
   const { stats } = state;
+  const look = resolveLook(draft);
   const pct = Math.min(100, Math.round((stats.drank / draft.dailyGoal) * 100));
   const quietNow = inQuietHours(draft.quietHours);
 
@@ -138,7 +213,7 @@ export default function SettingsApp() {
 
       {/* Reminders */}
       <Section title="Reminders" icon="⏰">
-        <Row label="Hourly reminders" hint="“Call Whiskers” works even when this is off">
+        <Row label="Hourly reminders" hint="“Call” from the menu works even when this is off">
           <Toggle label="Reminders" checked={draft.remindersEnabled} onChange={(v) => patch({ remindersEnabled: v }, 0)} />
         </Row>
         <div className={draft.remindersEnabled ? '' : 'pointer-events-none opacity-50'}>
@@ -207,37 +282,90 @@ export default function SettingsApp() {
         </div>
       </Section>
 
-      {/* Avatar */}
-      <Section title="Your avatar" icon="🎨">
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => patch({ avatar: 'cat' }, 0)}
-            className={`flex flex-col items-center gap-2 rounded-2xl p-3 ring-2 transition ${
-              draft.avatar === 'cat' ? 'bg-sky-50 ring-sky-500' : 'bg-white ring-slate-200 hover:ring-slate-300'
-            }`}
-          >
-            <img src={catHead} alt="" className="h-24 w-24 object-contain" />
-            <span className="text-sm font-semibold">Whiskers the cat</span>
-          </button>
-          <button
-            onClick={() => (draft.photo ? patch({ avatar: 'photo' }, 0) : fileInput.current?.click())}
-            className={`flex flex-col items-center gap-2 rounded-2xl p-3 ring-2 transition ${
-              draft.avatar === 'photo' ? 'bg-sky-50 ring-sky-500' : 'bg-white ring-slate-200 hover:ring-slate-300'
-            }`}
-          >
-            {draft.photo ? (
-              <img src={draft.photo} alt="" className="h-24 w-24 rounded-full border-4 border-slate-900 object-cover" />
-            ) : (
-              <span className="grid h-24 w-24 place-items-center rounded-full border-4 border-dashed border-slate-300 text-3xl text-slate-400">
-                📷
-              </span>
+      {/* Buddy */}
+      <Section title="Your buddy" icon="🎨">
+        <div className="flex gap-4">
+          <div className="buddy-preview shrink-0" title="Move your mouse around: the head follows it">
+            <div className="buddy-preview-stage">
+              <Buddy mood="ask" look={look} />
+            </div>
+          </div>
+          <div className="min-w-0 flex-1 space-y-3">
+            <label className="block text-sm font-medium text-slate-700">
+              Name
+              <input
+                value={draft.buddyName}
+                maxLength={24}
+                onChange={(e) => patch({ buddyName: e.target.value }, 600)}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+              />
+            </label>
+            <Segmented
+              value={draft.character}
+              options={[
+                { value: 'animal', label: '🐾 Animal' },
+                { value: 'human', label: '🙋 Human' },
+              ]}
+              onChange={(v) => patch({ character: v as Settings['character'] }, 0)}
+            />
+            {draft.character === 'human' && (
+              <Segmented
+                value={draft.sex}
+                options={[
+                  { value: 'male', label: '♂ Male' },
+                  { value: 'female', label: '♀ Female' },
+                ]}
+                onChange={(v) => {
+                  const sex = v as Sex;
+                  patch(
+                    {
+                      sex,
+                      humanStyle: HUMAN_STYLES[sex].includes(draft.humanStyle) ? draft.humanStyle : HUMAN_STYLES[sex][0],
+                      outfit: { ...draft.outfit, style: sex === 'female' ? 'dress' : 'pants' },
+                    },
+                    0,
+                  );
+                }}
+              />
             )}
-            <span className="text-sm font-semibold">{draft.photo ? 'My photo' : 'Upload a photo'}</span>
-          </button>
+            <p className="text-xs text-slate-500">Move your mouse around: the head turns to follow it, just like on your desktop.</p>
+          </div>
         </div>
-        <p className="text-xs text-slate-500">
-          Your photo becomes the head on Whiskers’ body, with a little mood badge. It stays on this computer.
-        </p>
+
+        <div>
+          <div className="mb-2 text-sm font-medium text-slate-700">Face</div>
+          <div className="grid grid-cols-6 gap-2">
+            {(draft.character === 'animal' ? ANIMALS : HUMAN_STYLES[draft.sex]).map((id) => {
+              const active = draft.avatar === 'preset' && (draft.character === 'animal' ? draft.animal === id : draft.humanStyle === id);
+              return (
+                <button
+                  key={id}
+                  title={LABELS[id]}
+                  onClick={() => patch(draft.character === 'animal' ? { animal: id as Settings['animal'], avatar: 'preset' } : { humanStyle: id, avatar: 'preset' }, 0)}
+                  className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${active ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
+                >
+                  <span className="h-14 w-14 overflow-hidden">
+                    <img src={headSrc(id, 'd4')} alt="" className="h-14 w-14 origin-[50%_85%] scale-[1.55] object-contain" />
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-600">{LABELS[id]}</span>
+                </button>
+              );
+            })}
+            <button
+              title="Use my photo"
+              onClick={() => (draft.photo ? patch({ avatar: 'photo' }, 0) : fileInput.current?.click())}
+              className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${draft.avatar === 'photo' ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
+            >
+              {draft.photo ? (
+                <img src={draft.photo} alt="" className="h-14 w-12 rounded-[50%] border-2 border-slate-900 object-cover" />
+              ) : (
+                <span className="grid h-14 w-12 place-items-center rounded-[50%] border-2 border-dashed border-slate-300 text-xl">📷</span>
+              )}
+              <span className="text-[10px] font-semibold text-slate-600">My photo</span>
+            </button>
+          </div>
+        </div>
+
         <input
           ref={fileInput}
           type="file"
@@ -252,23 +380,92 @@ export default function SettingsApp() {
         {photoFile ? (
           <PhotoEditor
             file={photoFile}
+            style={draft.photoStyle}
             onCancel={() => setPhotoFile(null)}
-            onSave={(dataUrl) => {
+            onSave={({ photo, original, style }) => {
               setPhotoFile(null);
-              patch({ photo: dataUrl, avatar: 'photo' }, 0);
+              patch({ photo, photoOriginal: original, photoStyle: style, avatar: 'photo' }, 0);
             }}
           />
         ) : (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700" onClick={() => fileInput.current?.click()}>
-              {draft.photo ? 'Change photo' : 'Choose photo…'}
+              📷 {draft.photo ? 'New photo…' : 'Use my photo…'}
             </button>
             {draft.photo && (
-              <button className="rounded-full px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" onClick={() => patch({ photo: null, avatar: 'cat' }, 0)}>
-                Remove photo
-              </button>
+              <>
+                <div className="flex rounded-full bg-slate-100 p-0.5 text-xs">
+                  {STYLE_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      onClick={async () => {
+                        const photo = draft.photoOriginal ? await restyle(draft.photoOriginal, o.value) : draft.photo;
+                        patch({ photoStyle: o.value, photo }, 0);
+                      }}
+                      className={`rounded-full px-2.5 py-1 font-semibold ${draft.photoStyle === o.value ? 'bg-white text-sky-700 shadow' : 'text-slate-500'}`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+                <button className="rounded-full px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" onClick={() => patch({ photo: null, photoOriginal: null, avatar: 'preset' }, 0)}>
+                  Remove photo
+                </button>
+              </>
             )}
           </div>
+        )}
+        <p className="text-xs text-slate-500">
+          Your photo is turned into an anime-style portrait (or comic / original), with the face and hair cropped automatically and placed on the figure. It never leaves this
+          computer.
+        </p>
+      </Section>
+
+      {/* Outfit */}
+      <Section title="Outfit & accessories" icon="👕">
+        {draft.character === 'human' && (
+          <>
+            <Segmented
+              value={draft.outfit.style}
+              options={[
+                { value: 'pants', label: '👖 Trousers' },
+                { value: 'skirt', label: '👗 Skirt' },
+                { value: 'dress', label: '👘 Dress' },
+              ]}
+              onChange={(v) => patch({ outfit: { ...draft.outfit, style: v as OutfitStyle } }, 0)}
+            />
+            <div className="grid grid-cols-3 gap-3">
+              <ColorPick label={draft.outfit.style === 'dress' ? 'Dress' : 'Top'} value={draft.outfit.top} onChange={(c) => patch({ outfit: { ...draft.outfit, top: c } })} />
+              {draft.outfit.style !== 'dress' && (
+                <ColorPick
+                  label={draft.outfit.style === 'skirt' ? 'Skirt' : 'Trousers'}
+                  value={draft.outfit.bottom}
+                  onChange={(c) => patch({ outfit: { ...draft.outfit, bottom: c } })}
+                />
+              )}
+              <ColorPick label="Shoes" value={draft.outfit.shoes} onChange={(c) => patch({ outfit: { ...draft.outfit, shoes: c } })} />
+            </div>
+          </>
+        )}
+        <div>
+          <div className="mb-2 text-sm font-medium text-slate-700">Accessory</div>
+          <div className="grid grid-cols-5 gap-2">
+            {ACCESSORY_OPTIONS.map((o) => (
+              <button
+                key={o.value}
+                onClick={() => patch({ accessory: o.value }, 0)}
+                className={`rounded-xl py-2 text-xs font-semibold ring-1 ${
+                  draft.accessory === o.value ? 'bg-sky-600 text-white ring-sky-600' : 'bg-white text-slate-600 ring-slate-300 hover:bg-slate-50'
+                }`}
+              >
+                <div className="text-lg">{o.icon}</div>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {draft.accessory !== 'none' && (
+          <ColorPick label="Accessory colour" value={draft.accessoryColor} onChange={(c) => patch({ accessoryColor: c })} />
         )}
       </Section>
 
@@ -306,7 +503,7 @@ export default function SettingsApp() {
             className="w-full"
           />
         </div>
-        <Row label="Pip the mouse" hint="Peeks out and gets chased when you say Yes">
+        <Row label="Pip the mouse" hint="Peeks out from behind and runs off when you say Yes">
           <Toggle label="Show mouse" checked={draft.showMouse} onChange={(v) => patch({ showMouse: v }, 0)} />
         </Row>
       </Section>
@@ -316,9 +513,9 @@ export default function SettingsApp() {
         <Row label="Start WaterBuddy when I log in">
           <Toggle label="Launch at login" checked={draft.launchAtLogin} onChange={(v) => patch({ launchAtLogin: v }, 0)} />
         </Row>
-        <Row label="Call Whiskers now" hint={`Shortcut: ${isMac ? '⌘⌥W' : 'Ctrl+Alt+W'}`}>
+        <Row label={`Call ${draft.buddyName} now`} hint={`Shortcut: ${isMac ? '⌘⌥W' : 'Ctrl+Alt+W'}`}>
           <button className="rounded-full bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-sky-700" onClick={() => window.waterBuddy.callWhiskers()}>
-            🐈 Try it
+            ▶ Try it
           </button>
         </Row>
       </Section>

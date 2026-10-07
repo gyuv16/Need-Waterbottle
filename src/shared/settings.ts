@@ -1,7 +1,20 @@
 // Settings shared by the main process, the overlay and the Settings window.
 
 export type WalkSpeed = 'slow' | 'normal' | 'fast';
-export type AvatarKind = 'cat' | 'photo';
+/** 'preset' = a drawn face from the character library, 'photo' = the user's own (cartoonised) photo. */
+export type AvatarKind = 'preset' | 'photo';
+export type CharacterKind = 'animal' | 'human';
+export type Sex = 'male' | 'female';
+export type OutfitStyle = 'pants' | 'skirt' | 'dress';
+export type Accessory = 'none' | 'bottle' | 'scarf' | 'backpack' | 'bowtie';
+
+export const ANIMALS = ['cat', 'dog', 'bear', 'bunny', 'fox', 'panda', 'penguin', 'tiger', 'koala', 'raccoon', 'redpanda', 'hamster'] as const;
+export const HUMAN_STYLES: Record<Sex, readonly string[]> = {
+  male: ['beard', 'cap', 'bald', 'builder', 'chef', 'grandpa', 'sikh', 'wizard'],
+  female: ['afro', 'ballerina', 'glasses', 'granny', 'hijabi', 'nurse', 'scientist', 'pirate', 'skater'],
+};
+export const ACCESSORIES: readonly Accessory[] = ['none', 'bottle', 'scarf', 'backpack', 'bowtie'];
+const HEX = /^#[0-9a-f]{6}$/i;
 
 export interface Settings {
   /** Master switch for the hourly reminders ("Call Whiskers" always works). */
@@ -18,9 +31,23 @@ export interface Settings {
   showMouse: boolean;
   /** Glasses of water to aim for each day. */
   dailyGoal: number;
+  /** Your buddy's name, used in the menu ("Call …"). */
+  buddyName: string;
+  character: CharacterKind;
+  animal: (typeof ANIMALS)[number];
+  sex: Sex;
+  /** Drawn face style for humans (see HUMAN_STYLES). */
+  humanStyle: string;
+  outfit: { style: OutfitStyle; top: string; bottom: string; shoes: string };
+  accessory: Accessory;
+  accessoryColor: string;
   avatar: AvatarKind;
-  /** Custom avatar photo, already cropped to a circle (PNG data URL). */
+  /** Custom face: an oval crop of the user's photo, cartoonised or not (PNG data URL). */
   photo: string | null;
+  /** The cropped photo before the cartoon effect, so the effect can be switched off later. */
+  photoOriginal: string | null;
+  /** Look applied to the photo face: anime (default), comic, or the original photo. */
+  photoStyle: 'anime' | 'comic' | 'none';
   launchAtLogin: boolean;
 }
 
@@ -45,8 +72,18 @@ export const DEFAULT_SETTINGS: Settings = {
   askAtStep: 20,
   showMouse: true,
   dailyGoal: 8,
-  avatar: 'cat',
+  buddyName: 'Whiskers',
+  character: 'animal',
+  animal: 'cat',
+  sex: 'male',
+  humanStyle: 'beard',
+  outfit: { style: 'pants', top: '#38bdf8', bottom: '#334155', shoes: '#f8fafc' },
+  accessory: 'bottle',
+  accessoryColor: '#0ea5e9',
+  avatar: 'preset',
   photo: null,
+  photoOriginal: null,
+  photoStyle: 'anime',
   launchAtLogin: false,
 };
 
@@ -69,6 +106,7 @@ const isTime = (v: unknown): v is string => typeof v === 'string' && /^([01]\d|2
 export function sanitizeSettings(input: unknown, base: Settings = DEFAULT_SETTINGS): Settings {
   const i = (input && typeof input === 'object' ? input : {}) as Partial<Settings>;
   const q = (i.quietHours && typeof i.quietHours === 'object' ? i.quietHours : {}) as Partial<Settings['quietHours']>;
+  const o = (i.outfit && typeof i.outfit === 'object' ? i.outfit : {}) as Partial<Settings['outfit']>;
   return {
     remindersEnabled: typeof i.remindersEnabled === 'boolean' ? i.remindersEnabled : base.remindersEnabled,
     intervalMinutes: clamp(i.intervalMinutes ?? base.intervalMinutes, LIMITS.intervalMinutes, base.intervalMinutes),
@@ -82,13 +120,33 @@ export function sanitizeSettings(input: unknown, base: Settings = DEFAULT_SETTIN
     askAtStep: clamp(i.askAtStep ?? base.askAtStep, LIMITS.askAtStep, base.askAtStep),
     showMouse: typeof i.showMouse === 'boolean' ? i.showMouse : base.showMouse,
     dailyGoal: clamp(i.dailyGoal ?? base.dailyGoal, LIMITS.dailyGoal, base.dailyGoal),
-    avatar: i.avatar === 'photo' || i.avatar === 'cat' ? i.avatar : base.avatar,
-    photo:
-      i.photo === null || (typeof i.photo === 'string' && i.photo.startsWith('data:image/') && i.photo.length < 2_000_000)
-        ? (i.photo ?? null)
-        : base.photo,
+    buddyName:
+      typeof i.buddyName === 'string' && i.buddyName.trim() ? i.buddyName.trim().slice(0, 24) : base.buddyName,
+    character: i.character === 'animal' || i.character === 'human' ? i.character : base.character,
+    animal: (ANIMALS as readonly string[]).includes(i.animal as string) ? (i.animal as Settings['animal']) : base.animal,
+    sex: i.sex === 'male' || i.sex === 'female' ? i.sex : base.sex,
+    humanStyle: [...HUMAN_STYLES.male, ...HUMAN_STYLES.female].includes(i.humanStyle as string)
+      ? (i.humanStyle as string)
+      : base.humanStyle,
+    outfit: {
+      style: ['pants', 'skirt', 'dress'].includes(o.style as string) ? (o.style as OutfitStyle) : base.outfit.style,
+      top: HEX.test(o.top ?? '') ? (o.top as string) : base.outfit.top,
+      bottom: HEX.test(o.bottom ?? '') ? (o.bottom as string) : base.outfit.bottom,
+      shoes: HEX.test(o.shoes ?? '') ? (o.shoes as string) : base.outfit.shoes,
+    },
+    accessory: ACCESSORIES.includes(i.accessory as Accessory) ? (i.accessory as Accessory) : base.accessory,
+    accessoryColor: HEX.test(i.accessoryColor ?? '') ? (i.accessoryColor as string) : base.accessoryColor,
+    // Settings from v1.5 used 'cat' for the drawn avatar.
+    avatar: i.avatar === 'photo' ? 'photo' : i.avatar === 'preset' || (i.avatar as unknown) === 'cat' ? 'preset' : base.avatar,
+    photo: validImage(i.photo) ? (i.photo ?? null) : base.photo,
+    photoOriginal: validImage(i.photoOriginal) ? (i.photoOriginal ?? null) : base.photoOriginal,
+    photoStyle: ['anime', 'comic', 'none'].includes(i.photoStyle as string) ? (i.photoStyle as Settings['photoStyle']) : base.photoStyle,
     launchAtLogin: typeof i.launchAtLogin === 'boolean' ? i.launchAtLogin : base.launchAtLogin,
   };
+}
+
+function validImage(v: unknown): v is string | null | undefined {
+  return v === null || (typeof v === 'string' && v.startsWith('data:image/') && v.length < 2_000_000);
 }
 
 export function todayKey(d = new Date()): string {

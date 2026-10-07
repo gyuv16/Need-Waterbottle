@@ -27,3 +27,20 @@ input[type='range']::-webkit-slider-thumb {
   cursor: pointer;
 }
 input[type='range']:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.3); }
+
+/* Live buddy preview (uses the same styles as the desktop overlay) */
+.buddy-preview {
+  width: 150px;
+  height: 210px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 50% 30%, #e0f2fe, #bae6fd 70%, #7dd3fc);
+  overflow: hidden;
+  position: relative;
+}
+.buddy-preview-stage {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  transform: translateX(-50%) scale(0.78);
+  transform-origin: 50% 100%;
+}

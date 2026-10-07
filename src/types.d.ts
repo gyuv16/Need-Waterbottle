@@ -8,6 +8,19 @@ declare module '*.png' { const src: string; export default src; }
 declare module '*.svg' { const src: string; export default src; }
 declare module '*.webp' { const src: string; export default src; }
 
+// webpack's require.context (used to bundle every character frame)
+declare namespace NodeJS {
+  interface Require {
+    context(dir: string, recursive: boolean, filter: RegExp): { (id: string): string; keys(): string[] };
+  }
+}
+
+// Shape Detection API (enabled in main.ts); backed by the OS face detector on Windows and macOS.
+declare class FaceDetector {
+  constructor(options?: { fastMode?: boolean; maxDetectedFaces?: number });
+  detect(image: ImageBitmapSource): Promise<{ boundingBox: DOMRectReadOnly }[]>;
+}
+
 interface Window {
   waterBuddy: {
     platform: NodeJS.Platform;

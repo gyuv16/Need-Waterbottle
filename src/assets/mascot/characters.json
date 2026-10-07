@@ -1,0 +1,150 @@
+{
+  "animals": {
+    "cat": {
+      "body": "#383030",
+      "belly": "#f8f0f0",
+      "tail": "long",
+      "shoulder": 162
+    },
+    "dog": {
+      "body": "#e8c090",
+      "belly": "#f8d8c0",
+      "tail": "curl",
+      "shoulder": 161
+    },
+    "bear": {
+      "body": "#b87038",
+      "belly": "#f0c898",
+      "tail": "stub",
+      "shoulder": 155
+    },
+    "bunny": {
+      "body": "#f8f0e8",
+      "belly": "#f8f0e8",
+      "tail": "puff",
+      "shoulder": 142
+    },
+    "fox": {
+      "body": "#f08038",
+      "belly": "#f8e0c8",
+      "tail": "bushy",
+      "shoulder": 150
+    },
+    "panda": {
+      "body": "#202020",
+      "belly": "#e8e0d8",
+      "tail": "stub",
+      "shoulder": 232
+    },
+    "penguin": {
+      "body": "#303038",
+      "belly": "#f8f0e8",
+      "tail": "none",
+      "shoulder": 249
+    },
+    "tiger": {
+      "body": "#f88830",
+      "belly": "#f8e0b8",
+      "tail": "long",
+      "shoulder": 160
+    },
+    "koala": {
+      "body": "#9098b0",
+      "belly": "#f8e8d0",
+      "tail": "stub",
+      "shoulder": 133
+    },
+    "raccoon": {
+      "body": "#807068",
+      "belly": "#f0e0c8",
+      "tail": "bushy",
+      "shoulder": 151
+    },
+    "redpanda": {
+      "body": "#502820",
+      "belly": "#f0d0b0",
+      "tail": "bushy",
+      "shoulder": 153
+    },
+    "hamster": {
+      "body": "#e8a050",
+      "belly": "#f8e0b8",
+      "tail": "stub",
+      "shoulder": 202
+    }
+  },
+  "humans": {
+    "male": [
+      {
+        "id": "beard",
+        "skin": "#f8b078"
+      },
+      {
+        "id": "cap",
+        "skin": "#f8c0a0"
+      },
+      {
+        "id": "bald",
+        "skin": "#b87040"
+      },
+      {
+        "id": "builder",
+        "skin": "#c07848"
+      },
+      {
+        "id": "chef",
+        "skin": "#f8c8a0"
+      },
+      {
+        "id": "grandpa",
+        "skin": "#f8c8a0"
+      },
+      {
+        "id": "sikh",
+        "skin": "#d89058"
+      },
+      {
+        "id": "wizard",
+        "skin": "#f8c8a8"
+      }
+    ],
+    "female": [
+      {
+        "id": "afro",
+        "skin": "#a05028"
+      },
+      {
+        "id": "ballerina",
+        "skin": "#f8d0b8"
+      },
+      {
+        "id": "glasses",
+        "skin": "#f8b890"
+      },
+      {
+        "id": "granny",
+        "skin": "#f8c8a0"
+      },
+      {
+        "id": "hijabi",
+        "skin": "#d89868"
+      },
+      {
+        "id": "nurse",
+        "skin": "#f8c8b0"
+      },
+      {
+        "id": "scientist",
+        "skin": "#c07848"
+      },
+      {
+        "id": "pirate",
+        "skin": "#a05830"
+      },
+      {
+        "id": "skater",
+        "skin": "#f8b898"
+      }
+    ]
+  }
+}
