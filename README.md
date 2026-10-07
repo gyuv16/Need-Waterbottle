@@ -107,11 +107,16 @@ Want to build or tune your own model? See the [3D avatar guide](docs/VRM_GUIDE.m
 
 ## ✨ AI anime avatar (upload your own photo)
 
-In *Your buddy*, press **✨ AI anime avatar…**, upload your photo and press **Generate**. The ready-made prompt turns you into a cute, high-quality anime character with your facial structure and hairstyle, a modern tech-wear outfit, hair accessories, subtle jewellery and vibrant anime lighting. You can edit the prompt freely. Press **Use as my face →** to crop the result to face and hair and put it on your buddy.
+In *Your buddy*, press **✨ AI anime avatar…**, upload your photo and press **Generate**. Then press **Use as my face →** to put it on your buddy, and dress it up in **Outfit & accessories**.
 
-- It uses **your own OpenAI API key** (image model `gpt-image-1`); each image is billed to your OpenAI account.
-- The key is stored encrypted on your computer (or kept only until you quit, if the system has no secure storage). You can remove it any time.
-- 🔒 Your photo leaves your computer **only** when you press Generate, and only goes to OpenAI.
+**💻 On this computer (default): free and fully offline**
+- An anime AI model is built into WaterBuddy and runs on your own computer: **no internet, no API key, no sign-up, no cost**.
+- Your face and hair are found and framed automatically; the result takes a few seconds.
+- 🔒 Your photo never leaves your computer.
+
+**☁️ Cloud AI (optional)**
+- For prompt-driven makeovers (tech-wear outfit, hair accessories, jewellery, anime lighting…), you can instead use OpenAI's image model with **your own API key**, billed to your OpenAI account.
+- The key is stored encrypted on your computer and your photo is sent to OpenAI only when you press Generate.
 
 ## Screenshots
 
@@ -220,6 +225,6 @@ You can also create installers for Windows and both Mac types by publishing a re
 
 ## Credits
 
-All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. 3D avatars use [three.js](https://threejs.org) and [three-vrm](https://github.com/pixiv/three-vrm) (MIT). The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
+All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. The offline anime model is AnimeGANv2 Face Portrait v2 by [bryandlee](https://github.com/bryandlee/animegan2-pytorch) (MIT), run with [ONNX Runtime](https://onnxruntime.ai) (MIT). 3D avatars use [three.js](https://threejs.org) and [three-vrm](https://github.com/pixiv/three-vrm) (MIT). The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
 
 <div align="center"><sub>Stay hydrated 💧</sub></div>

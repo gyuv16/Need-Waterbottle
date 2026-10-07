@@ -30,6 +30,7 @@ contextBridge.exposeInMainWorld('waterBuddy', {
     ipcRenderer.on('vrm-changed', listener);
     return () => ipcRenderer.removeListener('vrm-changed', listener);
   },
+  animeLocal: (pixels: Float32Array): Promise<{ ok: boolean; pixels?: Float32Array; error?: string }> => ipcRenderer.invoke('anime:local', pixels),
   aiHasKey: (): Promise<boolean> => ipcRenderer.invoke('ai:hasKey'),
   aiSetKey: (key: string | null): Promise<'saved' | 'session' | 'removed'> => ipcRenderer.invoke('ai:setKey', key),
   aiGenerate: (req: { image: ArrayBuffer; mime: string; prompt: string }): Promise<{ ok: boolean; dataUrl?: string; error?: string }> =>

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain, globalShortcut, safeStorage } from 'electron';
 import path from 'path';
 import fs from 'fs';
+import { Worker } from 'worker_threads';
 import { getState, loadState, recordAnswer, resetToday, updateSettings } from './store';
 import type { AppState, Settings } from './shared/settings';
 
@@ -220,6 +221,37 @@ function registerIpc(): void {
       return null;
     }
   };
+  // Offline photo → anime (AnimeGANv2 on this computer, no network). The model runs in a worker
+  // thread so the app never freezes; the worker is started on first use and kept for the session.
+  let animeWorker: Worker | null = null;
+  let animeJob = 0;
+  const animePending = new Map<number, (r: { ok: boolean; pixels?: Float32Array; error?: string }) => void>();
+  const getAnimeWorker = (): Worker => {
+    if (animeWorker) return animeWorker;
+    const dir = app.isPackaged ? path.join(process.resourcesPath, 'anime') : path.join(app.getAppPath(), 'anime');
+    const w = new Worker(path.join(dir, 'worker.mjs'));
+    w.on('message', (m: { id: number; pixels?: Float32Array; error?: string }) => {
+      animePending.get(m.id)?.(m.error ? { ok: false, error: m.error } : { ok: true, pixels: m.pixels });
+      animePending.delete(m.id);
+    });
+    const fail = (err: unknown) => {
+      for (const done of animePending.values()) done({ ok: false, error: `The anime model stopped: ${String(err)}` });
+      animePending.clear();
+      animeWorker = null;
+    };
+    w.on('error', fail);
+    w.on('exit', (code) => code && fail(`exit ${code}`));
+    animeWorker = w;
+    return w;
+  };
+  ipcMain.handle('anime:local', (_event, pixels: Float32Array) => {
+    if (!(pixels instanceof Float32Array) || pixels.length !== 3 * 512 * 512) return { ok: false, error: 'Bad image size.' };
+    const id = ++animeJob;
+    return new Promise((resolve) => {
+      animePending.set(id, resolve);
+      getAnimeWorker().postMessage({ id, pixels }, [pixels.buffer]);
+    });
+  });
   ipcMain.handle('ai:hasKey', () => !!readKey());
   ipcMain.handle('ai:setKey', (_event, key: string | null): 'saved' | 'session' | 'removed' => {
     if (!key) {
