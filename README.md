@@ -78,9 +78,9 @@ Get the latest version from the [**Releases page**](https://github.com/gyuv16/Ne
 
 | Your computer | Download |
 |---|---|
-| Windows 10 / 11 | `WaterBuddySetup.exe` |
-| Mac with Apple Silicon (M1, M2, M3, M4) | `WaterBuddy-arm64.dmg` |
-| Mac with Intel | `WaterBuddy-x64.dmg` |
+| Windows 10 / 11 | [**⬇ WaterBuddySetup.exe**](https://github.com/gyuv16/Need-Waterbottle/releases/latest/download/WaterBuddySetup.exe) |
+| Mac with Apple Silicon (M1, M2, M3, M4) | [**⬇ WaterBuddy-arm64.dmg**](https://github.com/gyuv16/Need-Waterbottle/releases/latest/download/WaterBuddy-arm64.dmg) |
+| Mac with Intel | [**⬇ WaterBuddy-x64.dmg**](https://github.com/gyuv16/Need-Waterbottle/releases/latest/download/WaterBuddy-x64.dmg) |
 
 <details>
 <summary><b>Windows</b></summary>
