@@ -32,6 +32,13 @@ interface Window {
     recordAnswer: (drank: boolean) => Promise<import('./shared/settings').AppState>;
     resetToday: () => Promise<import('./shared/settings').AppState>;
     onStateChanged: (callback: (state: import('./shared/settings').AppState) => void) => () => void;
+    saveVrm: (data: ArrayBuffer, name: string) => Promise<import('./shared/settings').AppState>;
+    loadVrm: () => Promise<ArrayBuffer | null>;
+    onVrmChanged: (callback: () => void) => () => void;
+    animeLocal: (pixels: Float32Array) => Promise<{ ok: boolean; pixels?: Float32Array; error?: string }>;
+    aiHasKey: () => Promise<boolean>;
+    aiSetKey: (key: string | null) => Promise<'saved' | 'session' | 'removed'>;
+    aiGenerate: (req: { image: ArrayBuffer; mime: string; prompt: string }) => Promise<{ ok: boolean; dataUrl?: string; error?: string }>;
     callWhiskers: () => void;
     openSettings: () => void;
   };

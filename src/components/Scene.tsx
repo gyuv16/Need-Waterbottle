@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type TransitionEvent } from 'react';
 import Buddy from './Buddy';
+import VrmBuddy, { VRM_W } from './VrmBuddy';
 import { resolveLook, type Mood } from '../characters';
 import Mouse, { type MouseMood } from './Mouse';
 import { CHASE_SPEED, TOTAL_STEPS } from '../config';
@@ -19,7 +20,6 @@ const EASE_ARRIVE = 'cubic-bezier(0.25, 0.1, 0.3, 1)';
 const EASE_LEAVE = 'cubic-bezier(0.45, 0, 0.85, 0.6)';
 const EASE_DASH = 'cubic-bezier(0.5, 0, 0.75, 0.4)';
 
-const CAT_W = 160;
 const MOUSE_W = 100;
 
 interface Props {
@@ -41,6 +41,8 @@ export default function Scene({ state, onFinish }: Props) {
     look: resolveLook(state.settings),
   }));
   const { stepMs: STEP_MS, askAtStep: ASK_AT_STEP } = cfg;
+  const isVrm = cfg.look.kind === 'vrm';
+  const CAT_W = isVrm ? VRM_W : 160;
   const { drank } = state.stats;
   const goal = state.settings.dailyGoal;
   const width = window.innerWidth;
@@ -117,7 +119,7 @@ export default function Scene({ state, onFinish }: Props) {
         </div>
       )}
 
-      <div className="actor actor--cat" style={moveStyle(cat)} onTransitionEnd={onCatMoved}>
+      <div className={`actor actor--cat ${isVrm ? 'actor--vrm' : ''}`} style={moveStyle(cat)} onTransitionEnd={onCatMoved}>
         {phase === 'ask' && (
           <div
             className="bubble bubble--ask"
@@ -138,9 +140,14 @@ export default function Scene({ state, onFinish }: Props) {
           <div className="bubble bubble--short">{cfg.showMouse ? 'Here I come! 💨' : `Yay! ${Math.min(drank, goal)} of ${goal} today 🎉`}</div>
         )}
         {phase === 'no' && <div className="bubble bubble--short bubble--sad">Oh… okay. Please drink some soon.</div>}
-        <div className={`cat-facing ${phase === 'no' ? 'cat-facing--left' : ''}`}>
-          <Buddy mood={catMood} look={cfg.look} />
-        </div>
+        {isVrm ? (
+          // The 3D avatar turns itself (no CSS mirroring needed).
+          <VrmBuddy mood={catMood} />
+        ) : (
+          <div className={`cat-facing ${phase === 'no' ? 'cat-facing--left' : ''}`}>
+            <Buddy mood={catMood} look={cfg.look} />
+          </div>
+        )}
         <div className={`ground-shadow ${phase === 'yes' ? 'ground-shadow--run' : ''}`} />
       </div>
     </div>

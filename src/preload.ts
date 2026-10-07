@@ -23,6 +23,18 @@ contextBridge.exposeInMainWorld('waterBuddy', {
     ipcRenderer.on('state-changed', listener);
     return () => ipcRenderer.removeListener('state-changed', listener);
   },
+  saveVrm: (data: ArrayBuffer, name: string): Promise<AppState> => ipcRenderer.invoke('vrm:save', data, name),
+  loadVrm: (): Promise<ArrayBuffer | null> => ipcRenderer.invoke('vrm:load'),
+  onVrmChanged: (callback: () => void) => {
+    const listener = () => callback();
+    ipcRenderer.on('vrm-changed', listener);
+    return () => ipcRenderer.removeListener('vrm-changed', listener);
+  },
+  animeLocal: (pixels: Float32Array): Promise<{ ok: boolean; pixels?: Float32Array; error?: string }> => ipcRenderer.invoke('anime:local', pixels),
+  aiHasKey: (): Promise<boolean> => ipcRenderer.invoke('ai:hasKey'),
+  aiSetKey: (key: string | null): Promise<'saved' | 'session' | 'removed'> => ipcRenderer.invoke('ai:setKey', key),
+  aiGenerate: (req: { image: ArrayBuffer; mime: string; prompt: string }): Promise<{ ok: boolean; dataUrl?: string; error?: string }> =>
+    ipcRenderer.invoke('ai:generate', req),
   callWhiskers: () => ipcRenderer.send('call-whiskers'),
   openSettings: () => ipcRenderer.send('open-settings'),
 });

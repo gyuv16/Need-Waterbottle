@@ -92,6 +92,32 @@ Open **💧 → Settings…** from the menu bar (Mac) or system tray (Windows).
 
 Settings save automatically and apply right away.
 
+## 🧊 3D anime avatar & desktop pet
+
+Pick **🧊 3D anime** in *Your buddy* and import any `.vrm` model (for example one you made for free in **VRoid Studio**). Your 3D character then:
+
+- walks in, turns to face you and talks while it asks, waves and runs off when you say **Yes**, and walks home sadly when you say **No**;
+- turns its whole body smoothly, blinks, breathes, and follows your pointer with its head and eyes;
+- has hair and clothes that sway as it moves;
+- can wave, look surprised, think, and show joy, sorrow, anger and more (try them in the live preview).
+
+Turn on **Desktop pet** and it wanders around the bottom of your screen between reminders, stopping now and then to wave or think, and jumps back in surprise if you dash the pointer at it. The 3D engine only loads when you use a 3D avatar, so the default buddy stays light.
+
+Want to build or tune your own model? See the [3D avatar guide](docs/VRM_GUIDE.md).
+
+## ✨ AI anime avatar (upload your own photo)
+
+In *Your buddy*, press **✨ AI anime avatar…**, upload your photo and press **Generate**. Then press **Use as my face →** to put it on your buddy, and dress it up in **Outfit & accessories**.
+
+**💻 On this computer (default): free and fully offline**
+- An anime AI model is built into WaterBuddy and runs on your own computer: **no internet, no API key, no sign-up, no cost**.
+- Your face and hair are found and framed automatically; the result takes a few seconds.
+- 🔒 Your photo never leaves your computer.
+
+**☁️ Cloud AI (optional)**
+- For prompt-driven makeovers (tech-wear outfit, hair accessories, jewellery, anime lighting…), you can instead use OpenAI's image model with **your own API key**, billed to your OpenAI account.
+- The key is stored encrypted on your computer and your photo is sent to OpenAI only when you press Generate.
+
 ## Screenshots
 
 <table>
@@ -199,6 +225,6 @@ You can also create installers for Windows and both Mac types by publishing a re
 
 ## Credits
 
-All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
+All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. The offline anime model is AnimeGANv2 Face Portrait v2 by [bryandlee](https://github.com/bryandlee/animegan2-pytorch) (MIT), run with [ONNX Runtime](https://onnxruntime.ai) (MIT). 3D avatars use [three.js](https://threejs.org) and [three-vrm](https://github.com/pixiv/three-vrm) (MIT). The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
 
 <div align="center"><sub>Stay hydrated 💧</sub></div>
