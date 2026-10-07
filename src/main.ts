@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain, globalShortcut } from 'electron';
 
 // Handle Squirrel install/uninstall shortcuts on Windows.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -6,6 +6,13 @@ if (require('electron-squirrel-startup')) app.quit();
 
 let overlay: BrowserWindow | null = null;
 let tray: Tray | null = null;
+
+// Global shortcut to call the cat: Ctrl+Alt+W on Windows, Cmd+Option+W on macOS.
+const CALL_SHORTCUT = 'CommandOrControl+Alt+W';
+
+function callWhiskers(): void {
+  overlay?.webContents.send('remind-now');
+}
 
 function createOverlay(): void {
   const { bounds } = screen.getPrimaryDisplay();
@@ -55,14 +62,17 @@ function createTray(): void {
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVR4nGNgGNTAYsGH/yA8MAbANJNtCEUGoGsmyRBcmok2ZNQAKhiAzxCiNNMdAABRKMf5vVXOwwAAAABJRU5ErkJggg==',
   );
   tray = new Tray(icon);
-  tray.setToolTip('WaterBuddy – stay hydrated');
+  tray.setToolTip('WaterBuddy – click to call Whiskers');
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Remind me now', click: () => overlay?.webContents.send('remind-now') },
+      { label: 'Call Whiskers 🐈', accelerator: CALL_SHORTCUT, click: callWhiskers },
       { type: 'separator' },
       { label: 'Quit WaterBuddy', click: () => app.quit() },
     ]),
   );
+  // Windows: a left-click on the tray icon calls Whiskers straight away (right-click opens the menu).
+  // macOS always opens the menu on click, so the menu item is used there.
+  if (process.platform !== 'darwin') tray.on('click', callWhiskers);
 }
 
 app.whenReady().then(() => {
@@ -71,6 +81,7 @@ app.whenReady().then(() => {
 
   createOverlay();
   createTray();
+  globalShortcut.register(CALL_SHORTCUT, callWhiskers);
 
   // Re-fit the overlay if the display resolution changes.
   screen.on('display-metrics-changed', () => {
@@ -78,6 +89,8 @@ app.whenReady().then(() => {
     overlay.setBounds(screen.getPrimaryDisplay().bounds);
   });
 });
+
+app.on('will-quit', () => globalShortcut.unregisterAll());
 
 // Background widget: keep running until explicitly quit from the tray.
 app.on('window-all-closed', () => {

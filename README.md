@@ -68,7 +68,7 @@ Only the two buttons can be clicked. Everywhere else, your clicks and typing go 
 | 🖱️ **Never in the way** | Only the two buttons are clickable; everything else clicks straight through |
 | 🖥️ **Always visible** | Appears over full-screen apps and on every virtual desktop or Space |
 | 👻 **Invisible otherwise** | No window, no taskbar button, no Dock icon |
-| ⏯️ **Remind me now** | Start the scene instantly from the tray or menu-bar icon |
+| 🐈 **Call Whiskers** | Call the cat any time from the 💧 menu-bar / tray icon, or press **⌘⌥W** (Mac) / **Ctrl+Alt+W** (Windows) |
 | ♿ **Reduced motion** | Respects your system's reduce-motion setting |
 | 💻 **Cross-platform** | Windows 10/11, plus macOS on Apple Silicon and Intel |
 
@@ -104,7 +104,9 @@ Not sure which Mac you have? Click  → **About This Mac**. If **Chip** says *Ap
 
 - **Start:** it starts after installation. To start it again later, open WaterBuddy from the Start menu or the Applications folder.
 - **Reminders:** Whiskers visits once every hour.
-- **Remind me now:** click the 💧 icon → **Remind me now** to start the scene straight away.
+- **Call Whiskers any time:**
+  - **Mac:** click the 💧 icon in the menu bar at the top of the screen → **Call Whiskers 🐈**, or press **⌘⌥W**.
+  - **Windows:** click the 💧 icon in the system tray, or press **Ctrl+Alt+W**. Right-click the icon for the menu.
 - **Answer:** click **Yes** or **No** in Whiskers' speech bubble. With no answer within a minute, Whiskers walks home.
 - **Quit:** click the 💧 icon in the tray or menu bar → **Quit WaterBuddy**.
 
