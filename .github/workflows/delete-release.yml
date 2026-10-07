@@ -1,12 +1,17 @@
 name: Delete release
 
-# Manual maintenance: removes a GitHub Release and its tag.
+# Manual maintenance: removes a GitHub Release (and its tag) and/or a branch.
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to delete (e.g. v1.0.0)'
-        required: true
+        description: 'Release tag to delete (e.g. v1.0.0). Leave empty to skip.'
+        required: false
+        default: ''
+      branch:
+        description: 'Branch to delete (never main). Leave empty to skip.'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -16,7 +21,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete release and tag
+        if: inputs.tag != ''
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
         run: gh release delete "$TAG" --cleanup-tag --yes -R "${{ github.repository }}"
+
+      - name: Delete branch
+        if: inputs.branch != '' && inputs.branch != 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ inputs.branch }}
+        run: gh api -X DELETE "repos/${{ github.repository }}/git/refs/heads/$BRANCH"
