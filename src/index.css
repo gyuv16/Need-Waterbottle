@@ -20,7 +20,7 @@ body,
   left: 0;
   right: 0;
   bottom: 56px;
-  height: 320px;
+  height: 420px;
   font-family: -apple-system, 'Segoe UI', Inter, Arial, sans-serif;
 }
 .actor {
@@ -29,8 +29,8 @@ body,
   left: 0;
   will-change: transform;
 }
-.actor--cat { width: 240px; z-index: 1; }
-.actor--mouse { width: 120px; z-index: 2; bottom: 4px; }
+.actor--cat { width: 160px; z-index: 1; }
+.actor--mouse { width: 100px; z-index: 2; bottom: 4px; }
 .cat-facing { transform-origin: center; }
 .cat-facing--left { transform: scaleX(-1); }
 
@@ -39,9 +39,9 @@ body,
   position: absolute;
   left: 50%;
   bottom: -6px;
-  width: 150px;
+  width: 110px;
   height: 16px;
-  margin-left: -75px;
+  margin-left: -55px;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
 }
@@ -51,106 +51,108 @@ body,
   50%      { transform: scaleX(0.75); opacity: 0.5; }
 }
 
-.cat, .mouse { overflow: visible; display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); }
-
-/* Cat joints pivot at real anatomical points (set inline, in SVG units) */
-.cat-leg, .cat-shin, .cat-tail, .cat-head, .cat-ear { transform-box: view-box; }
-.cat-head, .cat-ear, .cat-tail { transition: transform 0.4s ease; }
-.cat-body { transform-box: fill-box; transform-origin: 50% 50%; }
-.mouse-leg { transform-box: fill-box; transform-origin: 50% 8%; }
-
-/* ---------- Cat: walking in ---------- */
-.cat--walk .cat-leg--a { animation: leg-swing calc(var(--step) * 2) ease-in-out infinite; }
-.cat--walk .cat-leg--b { animation: leg-swing calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
-.cat--walk .cat-body,
-.cat--walk .cat-head { animation: body-bob var(--step) ease-in-out infinite; }
-.cat--walk .cat-tail { animation: tail-sway calc(var(--step) * 4) ease-in-out infinite; }
-.cat--walk .cat-leg--a .cat-shin { animation: knee-bend calc(var(--step) * 2) ease-in-out infinite; }
-.cat--walk .cat-leg--b .cat-shin { animation: knee-bend calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
-@keyframes leg-swing {
-  0%, 100% { transform: rotate(16deg); }
-  50%      { transform: rotate(-16deg); }
+/* ---------- Full-body chibi mascots ---------- */
+.mascot { position: relative; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); }
+.mascot--cat { width: 160px; height: 245px; }
+.mascot--mouse { width: 100px; height: 162px; }
+.mascot-bob { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.mascot-body { position: absolute; bottom: 0; left: 0; overflow: visible; }
+.mascot-head {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  transform-origin: 50% 100%;
+  transition: transform 0.35s ease;
 }
-/* The lower leg lifts as it swings forward, then straightens to plant the paw */
-@keyframes knee-bend {
-  0%, 45%, 100% { transform: rotate(0deg); }
-  70%           { transform: rotate(-28deg); }
+.mascot--cat .mascot-head { width: 150px; left: 5px; bottom: 76px; }
+.mascot--mouse .mascot-head { width: 100px; left: 0; bottom: 50px; }
+.m-leg, .m-arm, .m-tail { transform-box: view-box; }
+.m-tail { transition: transform 0.4s ease; }
+
+/* Walking */
+.cat--walk .m-leg--a { animation: leg-swing calc(var(--step) * 2) ease-in-out infinite; }
+.cat--walk .m-leg--b { animation: leg-swing calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
+.cat--walk .m-arm--a { animation: arm-swing calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
+.cat--walk .m-arm--b { animation: arm-swing calc(var(--step) * 2) ease-in-out infinite; }
+.cat--walk .mascot-bob { animation: body-bob var(--step) ease-in-out infinite; }
+.cat--walk .m-tail { animation: tail-sway calc(var(--step) * 4) ease-in-out infinite; }
+@keyframes leg-swing {
+  0%, 100% { transform: rotate(22deg); }
+  50%      { transform: rotate(-22deg); }
+}
+@keyframes arm-swing {
+  0%, 100% { transform: rotate(24deg); }
+  50%      { transform: rotate(-24deg); }
 }
 @keyframes body-bob {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2.5px); }
+  50%      { transform: translateY(-4px); }
 }
 @keyframes tail-sway {
-  0%, 100% { transform: rotate(-6deg); }
-  50%      { transform: rotate(8deg); }
+  0%, 100% { transform: rotate(-8deg); }
+  50%      { transform: rotate(10deg); }
 }
 
-/* ---------- Cat: asking ---------- */
-.cat--ask .cat-head { transform: rotate(-6deg); }
-.cat--ask .cat-tail { animation: tail-sway 1.6s ease-in-out infinite; }
-.cat--ask .cat-ear--front { animation: ear-twitch 3s ease-in-out infinite; }
-.cat--ask .cat-body { animation: breathe 2.4s ease-in-out infinite; }
-@keyframes ear-twitch {
-  0%, 85%, 100% { transform: rotate(0); }
-  90%           { transform: rotate(-12deg); }
-}
+/* Asking: stands still, breathing, tail swishing, head slightly tilted */
+.cat--ask .mascot-head { transform: rotate(-4deg); }
+.cat--ask .mascot-bob { animation: breathe 2.4s ease-in-out infinite; }
+.cat--ask .m-tail { animation: tail-sway 1.6s ease-in-out infinite; }
+.cat--ask .m-arm--a { transform: rotate(-20deg); }
 @keyframes breathe {
-  0%, 100% { transform: scale(1); }
+  0%, 100% { transform: scale(1, 1); }
   50%      { transform: scale(1.015, 1.03); }
 }
 
-/* ---------- Cat: full-energy chase ---------- */
-.cat--run .cat-leg--a { animation: leg-dash calc(var(--step) * 0.6) linear infinite; }
-.cat--run .cat-leg--b { animation: leg-dash calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
-.cat--run .cat-body { animation: run-stretch calc(var(--step) * 0.6) ease-in-out infinite; }
-.cat--run .cat-head { transform: rotate(6deg) translateX(4px); }
-.cat--run .cat-ear { transform: rotate(-25deg); }
-.cat--run .cat-tail { transform: rotate(-50deg); }
-.cat--run .cat-leg--a .cat-shin { animation: knee-bend calc(var(--step) * 0.6) linear infinite; }
-.cat--run .cat-leg--b .cat-shin { animation: knee-bend calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
+/* Yes: full-energy chase */
+.cat--run .mascot-bob { animation: run-bounce calc(var(--step) * 0.6) ease-in-out infinite; }
+.cat--run .m-leg--a { animation: leg-dash calc(var(--step) * 0.6) linear infinite; }
+.cat--run .m-leg--b { animation: leg-dash calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
+.cat--run .m-arm--a { animation: arm-dash calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
+.cat--run .m-arm--b { animation: arm-dash calc(var(--step) * 0.6) linear infinite; }
+.cat--run .m-tail { transform: rotate(-35deg); }
 @keyframes leg-dash {
-  0%, 100% { transform: rotate(45deg); }
-  50%      { transform: rotate(-45deg); }
+  0%, 100% { transform: rotate(42deg); }
+  50%      { transform: rotate(-42deg); }
 }
-@keyframes run-stretch {
-  0%, 100% { transform: scale(1.06, 0.95) translateY(0); }
-  50%      { transform: scale(0.97, 1.03) translateY(-6px); }
+@keyframes arm-dash {
+  0%, 100% { transform: rotate(50deg); }
+  50%      { transform: rotate(-50deg); }
+}
+@keyframes run-bounce {
+  0%, 100% { transform: rotate(7deg) translateY(0); }
+  50%      { transform: rotate(7deg) translateY(-8px); }
 }
 
-/* ---------- Cat: sad walk home ---------- */
-.cat--sad .cat-leg--a { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out infinite; }
-.cat--sad .cat-leg--b { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out calc(var(--step) * -1.6) infinite; }
-.cat--sad .cat-head { transform: rotate(14deg) translateY(10px); }
-.cat--sad .cat-ear { transform: rotate(30deg) translateY(4px); }
-.cat--sad .cat-tail { transform: rotate(-85deg); }
-.cat--sad .cat-body { animation: body-bob calc(var(--step) * 1.6) ease-in-out infinite; }
-.cat-tear { animation: tear-fall 1.8s ease-in infinite; }
+/* No: slow, sad walk home (whole cat is mirrored to face left; the head art already looks left) */
+.cat--sad .mascot-head { transform: scaleX(-1) translateY(6px); }
+.cat--sad .m-leg--a { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out infinite; }
+.cat--sad .m-leg--b { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out calc(var(--step) * -1.6) infinite; }
+.cat--sad .m-arm--a, .cat--sad .m-arm--b { transform: rotate(8deg); }
+.cat--sad .m-tail { transform: rotate(-70deg); }
+.cat--sad .mascot-bob { animation: body-bob calc(var(--step) * 1.6) ease-in-out infinite; }
 @keyframes leg-swing-slow {
   0%, 100% { transform: rotate(12deg); }
   50%      { transform: rotate(-12deg); }
 }
-@keyframes tear-fall {
-  0%   { transform: translateY(0); opacity: 0.9; }
-  100% { transform: translateY(16px); opacity: 0; }
-}
 
-/* ---------- Mouse ---------- */
+/* Mouse */
 .mouse--peek { animation: mouse-appear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-.mouse--peek .mouse-head { transform-box: fill-box; transform-origin: 30% 90%; animation: sniff 1.4s ease-in-out infinite; }
-.mouse--peek .mouse-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: tail-sway 1.2s ease-in-out infinite; }
+.mouse--peek .mascot-head { animation: sniff 1.4s ease-in-out infinite; }
+.mouse--peek .m-tail { animation: tail-sway 1.2s ease-in-out infinite; }
 @keyframes mouse-appear {
   from { transform: translateX(-30px) scale(0.6); opacity: 0; }
   to   { transform: translateX(0) scale(1); opacity: 1; }
 }
 @keyframes sniff {
   0%, 100% { transform: rotate(0); }
-  25%      { transform: rotate(-4deg) translateY(-1px); }
-  50%      { transform: rotate(2deg); }
+  25%      { transform: rotate(-4deg) translateY(-2px); }
+  50%      { transform: rotate(3deg); }
 }
-.mouse--run .mouse-leg--a { animation: leg-dash calc(var(--step) * 0.4) linear infinite; }
-.mouse--run .mouse-leg--b { animation: leg-dash calc(var(--step) * 0.4) linear calc(var(--step) * -0.2) infinite; }
-.mouse--run .mouse-body,
-.mouse--run .mouse-head { animation: body-bob calc(var(--step) * 0.4) ease-in-out infinite; }
+.mouse--run .mascot-bob { animation: run-bounce calc(var(--step) * 0.4) ease-in-out infinite; }
+.mouse--run .m-leg--a { animation: leg-dash calc(var(--step) * 0.4) linear infinite; }
+.mouse--run .m-leg--b { animation: leg-dash calc(var(--step) * 0.4) linear calc(var(--step) * -0.2) infinite; }
+.mouse--run .m-arm--a { animation: arm-dash calc(var(--step) * 0.4) linear infinite; }
+.mouse--run .m-tail { transform: rotate(-25deg); }
 .mouse--hide { animation: mouse-hide 0.6s ease-in forwards; }
 @keyframes mouse-hide {
   to { transform: translateX(-40px) scale(0.5); opacity: 0; }
@@ -159,8 +161,8 @@ body,
 /* ---------- Speech bubbles ---------- */
 .bubble {
   position: absolute;
-  left: 120px;
-  bottom: 168px;
+  left: 70px;
+  bottom: 236px;
   min-width: 220px;
   padding: 12px 16px;
   border-radius: 18px;
@@ -213,8 +215,8 @@ body,
 
 .mini-bubble {
   position: absolute;
-  left: 60px;
-  bottom: 84px;
+  left: 50px;
+  bottom: 150px;
   padding: 5px 10px;
   border-radius: 12px;
   background: #fff;
@@ -228,6 +230,6 @@ body,
 
 /* Respect the OS "reduce motion" setting: keep movement, drop the extras */
 @media (prefers-reduced-motion: reduce) {
-  .cat *, .mouse * { animation: none !important; }
+  .mascot, .mascot * { animation: none !important; }
   .bubble, .mini-bubble { animation: none; }
 }

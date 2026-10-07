@@ -19,7 +19,7 @@
     @keyframes droop{0%,100%{transform:translateX(8px)}50%{transform:translateX(-8px)}}
   </style>
   <defs>
-    <radialGradient id="gold" cx="45%" cy="35%" r="70%"><stop offset="0%" stop-color="#ffe7b3"/><stop offset="60%" stop-color="#f1bd6b"/><stop offset="100%" stop-color="#c58635"/></radialGradient>
+    <radialGradient id="gold" cx="45%" cy="35%" r="70%"><stop offset="0%" stop-color="#6a6a6a"/><stop offset="60%" stop-color="#3a3a3a"/><stop offset="100%" stop-color="#1f1f1f"/></radialGradient>
   </defs>
   <rect width="880" height="230" rx="18" fill="#fff8ec"/>
 
@@ -32,7 +32,7 @@
     </g>
     <circle cx="44" cy="44" r="12" fill="#e0862a"/><text class="n" x="44" y="48" text-anchor="middle">1</text>
     <text class="t" x="115" y="145" text-anchor="middle">Whiskers walks in</text>
-    <text class="s" x="115" y="166" text-anchor="middle">Every hour, a golden Persian</text>
+    <text class="s" x="115" y="166" text-anchor="middle">Every hour, a chibi tuxedo cat</text>
     <text class="s" x="115" y="182" text-anchor="middle">strolls in from the left</text>
   </g>
 
@@ -66,8 +66,8 @@
     <rect class="card" x="668" y="22" width="190" height="170" rx="16"/>
     <g class="droop">
       <circle cx="763" cy="80" r="26" fill="url(#gold)"/>
-      <path d="M750 76 q5 -4 10 0 M767 76 q5 -4 10 0" stroke="#5a3a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M754 94 q9 -7 18 0" stroke="#5a3a14" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M750 76 q5 -4 10 0 M767 76 q5 -4 10 0" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M754 94 q9 -7 18 0" stroke="#ffffff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
       <path d="M778 82 q3 6 0 9 q-3 -3 0 -9 Z" fill="#9ddcff"/>
       <path d="M716 112 h-14 l6 -6 M702 112 l6 6" stroke="#c9b39a" stroke-width="3" fill="none" stroke-linecap="round"/>
     </g>

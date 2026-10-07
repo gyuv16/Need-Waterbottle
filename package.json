@@ -1,8 +1,8 @@
 {
   "name": "water-buddy",
   "productName": "WaterBuddy",
-  "version": "1.3.0",
-  "description": "Desktop water reminder: a golden Persian cat asks if you drank water",
+  "version": "1.4.0",
+  "description": "Desktop water reminder: a chibi cat asks if you drank water",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",

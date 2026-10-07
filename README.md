@@ -2,9 +2,9 @@
 
 # 💧 WaterBuddy
 
-**A golden Persian cat and a little white mouse who make sure you drink water.**
+**A chibi tuxedo cat and a big-eared mouse who make sure you drink water.**
 
-<img src="docs/media/demo-yes.gif" alt="Whiskers the golden Persian cat asks 'Did you drink water?', the user clicks Yes, and Whiskers chases Pip the white mouse across the screen" width="880">
+<img src="docs/media/demo-yes.gif" alt="Whiskers the chibi tuxedo cat asks 'Did you drink water?', the user clicks Yes, and Whiskers chases Pip the mouse across the screen" width="880">
 
 <sub>Every hour, Whiskers walks in and asks if you've had water. Say <b>Yes</b> and the chase is on!</sub>
 
@@ -21,13 +21,13 @@
 ## Meet the cast
 
 <p align="center">
-  <img src="docs/screenshots/closeup.png" alt="Whiskers the golden Persian cat asking 'Did you drink water?' with Yes and No buttons while Pip the white mouse peeks out from behind" width="460">
+  <img src="docs/screenshots/closeup.png" alt="Whiskers the chibi tuxedo cat asking 'Did you drink water?' with Yes and No buttons while Pip the mouse peeks out from behind" width="460">
 </p>
 
 | | |
 |---|---|
-| 🐈 **Whiskers** | A golden Persian cat with a long, flowing coat, a thick neck ruff, a plumed tail and copper eyes. Whiskers cares about your hydration. |
-| 🐁 **Pip** | A tiny white mouse with big pink ears. Pip loves a good chase. |
+| 🐈 **Whiskers** | A chibi black-and-white tuxedo cat with white socks and a swishy tail. Whiskers' face changes with the story: curious while walking, wide-eyed when asking, star-struck during the chase and downcast when you say No. |
+| 🐁 **Pip** | A little grey mouse with big pink ears. Pip peeks out curiously, then laughs all the way through the chase. |
 
 ## How it works
 
@@ -145,5 +145,9 @@ npm run make   # create an installer for the current OS
 
 You can also create installers for Windows and both Mac types by publishing a release on GitHub. The installers are attached to the release automatically.
 </details>
+
+## Credits
+
+Whiskers' and Pip's head and expression artwork comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). The full bodies and animation were made for WaterBuddy.
 
 <div align="center"><sub>Stay hydrated 💧</sub></div>
