@@ -117,6 +117,8 @@ Want to build or tune your own model? See the [3D avatar guide](docs/VRM_GUIDE.m
 
 In *Your buddy*, press **✨ AI anime avatar…**, upload your photo and press **Generate**. Then press **Use as my face →** to put it on your buddy, and dress it up in **Outfit & accessories**.
 
+<p align="center"><img src="docs/screenshots/ai-anime-panel.png" alt="The AI anime avatar panel: choose On this computer (free, offline) or Cloud AI, upload your photo and press Generate" width="460"></p>
+
 **💻 On this computer (default): free and fully offline**
 - An anime AI model is built into WaterBuddy and runs on your own computer: **no internet, no API key, no sign-up, no cost**.
 - Your face and hair are found and framed automatically; the result takes a few seconds.
