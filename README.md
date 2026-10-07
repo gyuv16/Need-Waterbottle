@@ -12,7 +12,7 @@
 ![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?logo=windows&logoColor=white)
 ![macOS](https://img.shields.io/badge/macOS-Apple%20Silicon%20%7C%20Intel-000000?logo=apple&logoColor=white)
 
-[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [Meet the cast](#meet-the-cast) · [How it works](#how-it-works) · [Screenshots](#screenshots) · [FAQ](#faq)
+[**Download**](https://github.com/gyuv16/Need-Waterbottle/releases/latest) · [Meet the cast](#meet-the-cast) · [How it works](#how-it-works) · [Settings](#settings--your-own-avatar) · [Screenshots](#screenshots) · [FAQ](#faq)
 
 </div>
 
@@ -48,6 +48,33 @@ Only the two buttons can be clicked. Everywhere else, your clicks and typing go 
   <img src="docs/media/demo-no.gif" alt="The user clicks No; Pip hides and Whiskers turns around and walks sadly back to the left" width="880">
 </p>
 
+## Settings & your own avatar
+
+Open **💧 → Settings…** from the menu bar (Mac) or system tray (Windows).
+
+<table>
+  <tr>
+    <td align="center" valign="top"><img src="docs/screenshots/settings.png" alt="WaterBuddy Settings window with Today, Reminders, Your avatar, Animation and General sections" width="320"></td>
+    <td valign="top">
+
+**📊 Today**: see how many glasses you've had, set a daily goal (each **Yes** counts as one glass) and reset the count.
+
+**⏰ Reminders**: turn the reminders on or off, and choose how often they come (15 minutes to 2 hours, or any number of minutes). You can also set **quiet hours** (for example 10 PM–8 AM) and how long Whiskers waits for your answer.
+
+**🎨 Your avatar**: keep Whiskers, or **upload any photo**. Drag it to place your face and zoom to fit the circle. The photo becomes the head on Whiskers' body, with a small mood badge (💧 asking, 🤩 Yes, 😢 No). It stays on your computer.
+
+**🎬 Animation**: walking speed (slow / normal / fast), when Whiskers stops to ask (step 10–60 of 100), and Pip the mouse on or off.
+
+**⚙️ General**: start WaterBuddy when you log in, and a **🐈 Try it** button to call Whiskers right away.
+
+<img src="docs/screenshots/photo-avatar.png" alt="A custom photo avatar on Whiskers' body asking 'Did you drink water?' with today's glass count" width="300">
+
+</td>
+  </tr>
+</table>
+
+Settings save automatically and apply right away.
+
 ## Screenshots
 
 <table>
@@ -70,6 +97,10 @@ Only the two buttons can be clicked. Everywhere else, your clicks and typing go 
 | 👻 **Invisible otherwise** | No window, no taskbar button, no Dock icon |
 | 🐈 **Call Whiskers** | Call the cat any time from the 💧 menu-bar / tray icon, or press **⌘⌥W** (Mac) / **Ctrl+Alt+W** (Windows) |
 | ♿ **Reduced motion** | Respects your system's reduce-motion setting |
+| 🖼️ **Your own avatar** | Upload any photo, crop it in a circle and it becomes the head on Whiskers' body |
+| 📊 **Daily goal** | Counts your glasses each day and shows progress in the bubble and the tray menu |
+| 🌙 **Quiet hours** | No reminders during the hours you choose |
+| 🪶 **Lightweight** | The overlay is hidden between reminders: about 0.1% CPU while idle |
 | 💻 **Cross-platform** | Windows 10/11, plus macOS on Apple Silicon and Intel |
 
 ## Download & install
@@ -107,7 +138,8 @@ Not sure which Mac you have? Click  → **About This Mac**. If **Chip** says *Ap
 - **Call Whiskers any time:**
   - **Mac:** click the 💧 icon in the menu bar at the top of the screen → **Call Whiskers 🐈**, or press **⌘⌥W**.
   - **Windows:** click the 💧 icon in the system tray, or press **Ctrl+Alt+W**. Right-click the icon for the menu.
-- **Answer:** click **Yes** or **No** in Whiskers' speech bubble. With no answer within a minute, Whiskers walks home.
+- **Answer:** click **Yes** or **No** in Whiskers' speech bubble. With no answer in time (60 seconds unless you change it), Whiskers walks home.
+- **Settings:** 💧 icon → **Settings…**, or untick **Hourly reminders** in the same menu to pause.
 - **Quit:** click the 💧 icon in the tray or menu bar → **Quit WaterBuddy**.
 
 ## FAQ

@@ -7,10 +7,22 @@ export type CatMood = 'walk' | 'ask' | 'run' | 'sad';
 
 interface Props {
   mood: CatMood;
+  /** Optional custom avatar: a circular photo shown as the head. */
+  photo?: string | null;
 }
+
+// With a photo avatar, a small badge shows the mood instead of the drawn expressions.
+const BADGE: Record<CatMood, string> = { walk: '', ask: '💧', run: '🤩', sad: '😢' };
 
 // Head + expression art from page-mascot (MIT, see assets/mascot/LICENSE-page-mascot).
 const HEADS: Record<CatMood, string> = { walk: walkHead, ask: askHead, run: runHead, sad: sadHead };
+
+// Decode every expression up front so the first mood change never flickers.
+for (const src of Object.values(HEADS)) {
+  const img = new Image();
+  img.src = src;
+  img.decode?.().catch(() => undefined);
+}
 
 const FUR = '#303030';
 const FUR_FAR = '#232323';
@@ -18,7 +30,7 @@ const WHITE = '#f3f3f3';
 const LINE = '#111111';
 
 /** Whiskers: a chibi tuxedo cat with a full body. The body is drawn to match the head art. */
-export default function Cat({ mood }: Props) {
+export default function Cat({ mood, photo }: Props) {
   return (
     <div className={`mascot mascot--cat cat--${mood}`}>
       <div className="mascot-bob">
@@ -55,7 +67,14 @@ export default function Cat({ mood }: Props) {
             <circle cx="128" cy="37" r="6" fill={WHITE} stroke={LINE} strokeWidth="3" />
           </g>
         </svg>
-        <img className="mascot-head" src={HEADS[mood]} alt="" draggable={false} />
+        {photo ? (
+          <div className="mascot-head photo-head">
+            <img src={photo} alt="" draggable={false} />
+            {BADGE[mood] && <span className="photo-badge">{BADGE[mood]}</span>}
+          </div>
+        ) : (
+          <img key={mood} className="mascot-head head-swap" src={HEADS[mood]} alt="" draggable={false} decoding="sync" />
+        )}
       </div>
     </div>
   );
