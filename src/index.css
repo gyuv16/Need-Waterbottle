@@ -29,7 +29,7 @@ body,
   left: 0;
   will-change: transform;
 }
-.actor--cat { width: 220px; z-index: 1; }
+.actor--cat { width: 240px; z-index: 1; }
 .actor--mouse { width: 120px; z-index: 2; bottom: 4px; }
 .cat-facing { transform-origin: center; }
 .cat-facing--left { transform: scaleX(-1); }
@@ -53,12 +53,11 @@ body,
 
 .cat, .mouse { overflow: visible; display: block; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); }
 
-/* Body parts rotate around their own top/centre */
-.cat-leg, .mouse-leg { transform-box: fill-box; transform-origin: 50% 8%; }
-.cat-tail { transform-box: fill-box; transform-origin: 95% 95%; }
-.cat-head { transform-box: fill-box; transform-origin: 20% 90%; transition: transform 0.4s ease; }
-.cat-ear { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.4s ease; }
+/* Cat joints pivot at real anatomical points (set inline, in SVG units) */
+.cat-leg, .cat-shin, .cat-tail, .cat-head, .cat-ear { transform-box: view-box; }
+.cat-head, .cat-ear, .cat-tail { transition: transform 0.4s ease; }
 .cat-body { transform-box: fill-box; transform-origin: 50% 50%; }
+.mouse-leg { transform-box: fill-box; transform-origin: 50% 8%; }
 
 /* ---------- Cat: walking in ---------- */
 .cat--walk .cat-leg--a { animation: leg-swing calc(var(--step) * 2) ease-in-out infinite; }
@@ -66,9 +65,16 @@ body,
 .cat--walk .cat-body,
 .cat--walk .cat-head { animation: body-bob var(--step) ease-in-out infinite; }
 .cat--walk .cat-tail { animation: tail-sway calc(var(--step) * 4) ease-in-out infinite; }
+.cat--walk .cat-leg--a .cat-shin { animation: knee-bend calc(var(--step) * 2) ease-in-out infinite; }
+.cat--walk .cat-leg--b .cat-shin { animation: knee-bend calc(var(--step) * 2) ease-in-out calc(var(--step) * -1) infinite; }
 @keyframes leg-swing {
-  0%, 100% { transform: rotate(20deg); }
-  50%      { transform: rotate(-20deg); }
+  0%, 100% { transform: rotate(16deg); }
+  50%      { transform: rotate(-16deg); }
+}
+/* The lower leg lifts as it swings forward, then straightens to plant the paw */
+@keyframes knee-bend {
+  0%, 45%, 100% { transform: rotate(0deg); }
+  70%           { transform: rotate(-28deg); }
 }
 @keyframes body-bob {
   0%, 100% { transform: translateY(0); }
@@ -99,7 +105,9 @@ body,
 .cat--run .cat-body { animation: run-stretch calc(var(--step) * 0.6) ease-in-out infinite; }
 .cat--run .cat-head { transform: rotate(6deg) translateX(4px); }
 .cat--run .cat-ear { transform: rotate(-25deg); }
-.cat--run .cat-tail { transform: rotate(40deg); }
+.cat--run .cat-tail { transform: rotate(-50deg); }
+.cat--run .cat-leg--a .cat-shin { animation: knee-bend calc(var(--step) * 0.6) linear infinite; }
+.cat--run .cat-leg--b .cat-shin { animation: knee-bend calc(var(--step) * 0.6) linear calc(var(--step) * -0.3) infinite; }
 @keyframes leg-dash {
   0%, 100% { transform: rotate(45deg); }
   50%      { transform: rotate(-45deg); }
@@ -114,7 +122,7 @@ body,
 .cat--sad .cat-leg--b { animation: leg-swing-slow calc(var(--step) * 3.2) ease-in-out calc(var(--step) * -1.6) infinite; }
 .cat--sad .cat-head { transform: rotate(14deg) translateY(10px); }
 .cat--sad .cat-ear { transform: rotate(30deg) translateY(4px); }
-.cat--sad .cat-tail { transform: rotate(-55deg) translateY(10px); }
+.cat--sad .cat-tail { transform: rotate(-85deg); }
 .cat--sad .cat-body { animation: body-bob calc(var(--step) * 1.6) ease-in-out infinite; }
 .cat-tear { animation: tear-fall 1.8s ease-in infinite; }
 @keyframes leg-swing-slow {

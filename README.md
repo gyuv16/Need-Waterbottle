@@ -26,7 +26,7 @@
 
 | | |
 |---|---|
-| 🐈 **Whiskers** | A fluffy golden Persian cat with copper eyes and a bushy tail. Whiskers cares about your hydration. |
+| 🐈 **Whiskers** | A golden Persian cat with a long, flowing coat, a thick neck ruff, a plumed tail and copper eyes. Whiskers cares about your hydration. |
 | 🐁 **Pip** | A tiny white mouse with big pink ears. Pip loves a good chase. |
 
 ## How it works
