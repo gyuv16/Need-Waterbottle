@@ -11,7 +11,7 @@ interface Move {
   delay?: number;
 }
 
-const CAT_W = 220;
+const CAT_W = 240;
 const MOUSE_W = 120;
 
 interface Props {
