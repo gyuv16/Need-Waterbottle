@@ -52,10 +52,10 @@ body,
 }
 
 /* ---------- Full-body chibi mascots ---------- */
-.mascot { position: relative; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.18)); }
+.mascot { position: relative; }
 .mascot--cat { width: 160px; height: 245px; }
 .mascot--mouse { width: 100px; height: 162px; }
-.mascot-bob { position: absolute; inset: 0; transform-origin: 50% 100%; }
+.mascot-bob { position: absolute; inset: 0; transform-origin: 50% 100%; will-change: transform; }
 .mascot-body { position: absolute; bottom: 0; left: 0; overflow: visible; }
 .mascot-head {
   position: absolute;
@@ -64,9 +64,36 @@ body,
   transform-origin: 50% 100%;
   transition: transform 0.35s ease;
 }
+/* Expression changes pop in softly instead of cutting */
+.head-swap { animation: head-swap 0.22s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes head-swap {
+  from { opacity: 0.4; scale: 0.94; }
+  to   { opacity: 1; scale: 1; }
+}
 .mascot--cat .mascot-head { width: 150px; left: 5px; bottom: 76px; }
 .mascot--mouse .mascot-head { width: 100px; left: 0; bottom: 50px; }
 .m-leg, .m-arm, .m-tail { transform-box: view-box; }
+
+/* Custom photo avatar: a round portrait with the same thick outline as the drawn art */
+.mascot--cat .photo-head { width: 128px; height: 128px; left: 16px; bottom: 66px; }
+.photo-head img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid #111;
+  background: #fff;
+  object-fit: cover;
+  box-sizing: border-box;
+}
+.photo-badge {
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+.cat--sad .photo-badge { transform: scaleX(-1); }
 .m-tail { transition: transform 0.4s ease; }
 
 /* Walking */
@@ -187,7 +214,8 @@ body,
   border-bottom: 2px solid #f0bb69;
   transform: rotate(45deg);
 }
-.bubble p { margin: 0 0 10px; white-space: nowrap; }
+.bubble p { margin: 0 0 4px; white-space: nowrap; }
+.bubble-progress { display: block; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #8a6a3a; }
 .bubble--short { min-width: 0; white-space: nowrap; font-size: 15px; }
 .bubble--sad { color: #6b4a2a; border-color: #c9b39a; }
 .bubble--sad::after { border-color: #c9b39a; }

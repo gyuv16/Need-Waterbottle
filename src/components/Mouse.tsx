@@ -11,6 +11,12 @@ interface Props {
 // Head + expression art from page-mascot (MIT, see assets/mascot/LICENSE-page-mascot).
 const HEADS: Record<MouseMood, string> = { peek: peekHead, run: runHead, hide: hideHead };
 
+for (const src of Object.values(HEADS)) {
+  const img = new Image();
+  img.src = src;
+  img.decode?.().catch(() => undefined);
+}
+
 const FUR = '#a89c90';
 const FUR_FAR = '#8f8478';
 const BELLY = '#f0d8c0';
@@ -43,7 +49,7 @@ export default function Mouse({ mood }: Props) {
             <circle cx="75" cy="27" r="3.6" fill={PINK} stroke={LINE} strokeWidth="2" />
           </g>
         </svg>
-        <img className="mascot-head" src={HEADS[mood]} alt="" draggable={false} />
+        <img key={mood} className="mascot-head head-swap" src={HEADS[mood]} alt="" draggable={false} decoding="sync" />
       </div>
     </div>
   );
