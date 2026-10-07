@@ -103,6 +103,14 @@ Pick **🧊 3D anime** in *Your buddy* and import any `.vrm` model (for example 
 
 Turn on **Desktop pet** and it wanders around the bottom of your screen between reminders, stopping now and then to wave or think, and jumps back in surprise if you dash the pointer at it. The 3D engine only loads when you use a 3D avatar, so the default buddy stays light.
 
+<p align="center">
+  <img src="docs/screenshots/3d-avatar.png" alt="A 3D anime avatar in six poses: standing, waving, surprised, walking, thinking and looking around" width="760">
+</p>
+<p align="center">
+  <img src="docs/screenshots/settings-3d.png" alt="The 3D anime buddy settings with a live preview and Reactions and Expressions buttons" width="420">
+</p>
+<p align="center"><sub>Shown with pixiv's free VRM sample model. Use any <code>.vrm</code> you like.</sub></p>
+
 Want to build or tune your own model? See the [3D avatar guide](docs/VRM_GUIDE.md).
 
 ## ✨ AI anime avatar (upload your own photo)
