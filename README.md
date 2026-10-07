@@ -2,7 +2,7 @@
 
 # 💧 WaterBuddy
 
-**A chibi tuxedo cat and a big-eared mouse who make sure you drink water.**
+**Your own animated buddy — an animal, a person, or *you* in anime style — who makes sure you drink water.**
 
 <img src="docs/media/demo-yes.gif" alt="Whiskers the chibi tuxedo cat asks 'Did you drink water?', the user clicks Yes, and Whiskers chases Pip the mouse across the screen" width="880">
 
@@ -28,6 +28,21 @@
 |---|---|
 | 🐈 **Whiskers** | A chibi black-and-white tuxedo cat with white socks and a swishy tail. Whiskers' face changes with the story: curious while walking, wide-eyed when asking, star-struck during the chase and downcast when you say No. |
 | 🐁 **Pip** | A little grey mouse with big pink ears. Pip peeks out curiously, then laughs all the way through the chase. |
+
+## Make it yours
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="50%"><img src="docs/media/head-follow.gif" alt="The buddy's head turns to follow the mouse pointer in nine directions" width="400"><br><sub><b>Real head turns</b>: the head turns through nine directions and follows your pointer</sub></td>
+    <td align="center" valign="top" width="50%"><img src="docs/screenshots/human-buddy.png" alt="A human buddy (nurse, blue dress) asking 'Did you drink water?' with Pip the mouse" width="400"><br><sub><b>Human or animal</b>: choose the face, outfit colours and accessories</sub></td>
+  </tr>
+</table>
+
+- **🐾 Animal or 🙋 Human.** Pick from 12 animals (cat, pug, bear, bunny, fox, panda, penguin, tiger, koala, raccoon, red panda, hamster) or a person. Choose **Male** or **Female**, then one of 17 faces (beard, cap, turban, chef, curly, hijab, nurse, beanie and more).
+- **📷 Your photo becomes the face.** Upload any photo. The face and hair are found and cropped automatically, then turned into an **anime-style portrait**: smooth painted skin, cel shading, clean ink lines and a soft glow. You can pick **Comic** or **Original** instead, and drag or zoom to fine-tune.
+- **👕 Outfits and accessories.** Trousers, skirt or dress, each in any colour, plus shoes. Add a water bottle, scarf, backpack or bow tie in any colour.
+- **👀 A head that really turns.** Walking in, your buddy looks where it's going. When it stops, it turns to face you, then follows your mouse pointer through nine directions, stepping through the in-between angles like a hand-drawn animation.
+- **✏️ A name.** Give your buddy a name. The menu says **Call Nina 🙋**, for example.
 
 ## How it works
 
@@ -61,13 +76,15 @@ Open **💧 → Settings…** from the menu bar (Mac) or system tray (Windows).
 
 **⏰ Reminders**: turn the reminders on or off, and choose how often they come (15 minutes to 2 hours, or any number of minutes). You can also set **quiet hours** (for example 10 PM–8 AM) and how long Whiskers waits for your answer.
 
-**🎨 Your avatar**: keep Whiskers, or **upload any photo**. Drag it to place your face and zoom to fit the circle. The photo becomes the head on Whiskers' body, with a small mood badge (💧 asking, 🤩 Yes, 😢 No). It stays on your computer.
+**🎨 Your buddy**: name, Animal / Human, Male / Female, face style, or **your own photo**, turned into an anime portrait and cropped to face and hair automatically. A live preview follows your pointer.
+
+**👕 Outfit & accessories**: trousers / skirt / dress, top, bottom and shoe colours, plus a bottle, scarf, backpack or bow tie in any colour.
 
 **🎬 Animation**: walking speed (slow / normal / fast), when Whiskers stops to ask (step 10–60 of 100), and Pip the mouse on or off.
 
 **⚙️ General**: start WaterBuddy when you log in, and a **🐈 Try it** button to call Whiskers right away.
 
-<img src="docs/screenshots/photo-avatar.png" alt="A custom photo avatar on Whiskers' body asking 'Did you drink water?' with today's glass count" width="300">
+<img src="docs/screenshots/settings-buddy.png" alt="The 'Your buddy' and 'Outfit & accessories' settings with a live preview" width="320">
 
 </td>
   </tr>
@@ -97,7 +114,9 @@ Settings save automatically and apply right away.
 | 👻 **Invisible otherwise** | No window, no taskbar button, no Dock icon |
 | 🐈 **Call Whiskers** | Call the cat any time from the 💧 menu-bar / tray icon, or press **⌘⌥W** (Mac) / **Ctrl+Alt+W** (Windows) |
 | ♿ **Reduced motion** | Respects your system's reduce-motion setting |
-| 🖼️ **Your own avatar** | Upload any photo, crop it in a circle and it becomes the head on Whiskers' body |
+| 🙋 **Human or animal** | 12 animals or 17 human faces (male / female), with outfits and accessories in any colour |
+| 🌸 **Anime photo face** | Your photo, auto-cropped to face and hair and turned into an anime-style portrait |
+| 👀 **Real head turns** | Nine head directions; the head follows your mouse pointer |
 | 📊 **Daily goal** | Counts your glasses each day and shows progress in the bubble and the tray menu |
 | 🌙 **Quiet hours** | No reminders during the hours you choose |
 | 🪶 **Lightweight** | The overlay is hidden between reminders: about 0.1% CPU while idle |
@@ -180,6 +199,6 @@ You can also create installers for Windows and both Mac types by publishing a re
 
 ## Credits
 
-Whiskers' and Pip's head and expression artwork comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). The full bodies and animation were made for WaterBuddy.
+All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
 
 <div align="center"><sub>Stay hydrated 💧</sub></div>

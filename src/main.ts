@@ -7,6 +7,10 @@ import type { AppState, Settings } from './shared/settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 if (require('electron-squirrel-startup')) app.quit();
 
+// Enables the browser's FaceDetector (Shape Detection API), which uses the face detection built
+// into Windows and macOS. It finds the face for the automatic photo crop, with no extra download.
+app.commandLine.appendSwitch('enable-experimental-web-platform-features');
+
 let overlay: BrowserWindow | null = null;
 let settingsWin: BrowserWindow | null = null;
 let tray: Tray | null = null;
@@ -113,7 +117,7 @@ function buildTrayMenu(): void {
   const { settings, stats } = getState();
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Call Whiskers 🐈', accelerator: CALL_SHORTCUT, click: callWhiskers },
+      { label: `Call ${settings.buddyName} ${settings.character === 'human' ? '🙋' : '🐾'}`, accelerator: CALL_SHORTCUT, click: callWhiskers },
       { label: `Today: ${stats.drank} of ${settings.dailyGoal} glasses 💧`, enabled: false },
       { type: 'separator' },
       {
@@ -135,7 +139,7 @@ function createTray(): void {
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVR4nGNgGNTAYsGH/yA8MAbANJNtCEUGoGsmyRBcmok2ZNQAKhiAzxCiNNMdAABRKMf5vVXOwwAAAABJRU5ErkJggg==',
   );
   tray = new Tray(icon);
-  tray.setToolTip('WaterBuddy – click to call Whiskers');
+  tray.setToolTip(`WaterBuddy – click to call ${getState().settings.buddyName}`);
   buildTrayMenu();
   // Windows: a left-click on the tray icon calls Whiskers straight away (right-click opens the menu).
   // macOS always opens the menu on click, so the menu item is used there.

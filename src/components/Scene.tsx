@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type TransitionEvent } from 'react';
-import Cat, { type CatMood } from './Cat';
+import Buddy from './Buddy';
+import { resolveLook, type Mood } from '../characters';
 import Mouse, { type MouseMood } from './Mouse';
 import { CHASE_SPEED, TOTAL_STEPS } from '../config';
 import { STEP_MS_BY_SPEED, type AppState } from '../shared/settings';
@@ -37,7 +38,7 @@ export default function Scene({ state, onFinish }: Props) {
     askAtStep: state.settings.askAtStep,
     timeoutMs: state.settings.answerTimeoutSec * 1000,
     showMouse: state.settings.showMouse,
-    photo: state.settings.avatar === 'photo' ? state.settings.photo : null,
+    look: resolveLook(state.settings),
   }));
   const { stepMs: STEP_MS, askAtStep: ASK_AT_STEP } = cfg;
   const { drank } = state.stats;
@@ -98,7 +99,7 @@ export default function Scene({ state, onFinish }: Props) {
     }
   };
 
-  const catMood: CatMood = phase === 'enter' ? 'walk' : phase === 'ask' ? 'ask' : phase === 'yes' ? 'run' : 'sad';
+  const catMood: Mood = phase === 'enter' ? 'walk' : phase === 'ask' ? 'ask' : phase === 'yes' ? 'run' : 'sad';
   const mouseMood: MouseMood = phase === 'yes' ? 'run' : phase === 'no' ? 'hide' : 'peek';
 
   const moveStyle = (m: Move, extra?: CSSProperties): CSSProperties => ({
@@ -138,7 +139,7 @@ export default function Scene({ state, onFinish }: Props) {
         )}
         {phase === 'no' && <div className="bubble bubble--short bubble--sad">Oh… okay. Please drink some soon.</div>}
         <div className={`cat-facing ${phase === 'no' ? 'cat-facing--left' : ''}`}>
-          <Cat mood={catMood} photo={cfg.photo} />
+          <Buddy mood={catMood} look={cfg.look} />
         </div>
         <div className={`ground-shadow ${phase === 'yes' ? 'ground-shadow--run' : ''}`} />
       </div>

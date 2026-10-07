@@ -1,6 +1,6 @@
-import peekHead from '../assets/mascot/mouse-peek.webp';
-import runHead from '../assets/mascot/mouse-run.webp';
-import hideHead from '../assets/mascot/mouse-hide.webp';
+import peekHead from '../assets/mascot/mouse/peek.webp';
+import runHead from '../assets/mascot/mouse/run.webp';
+import hideHead from '../assets/mascot/mouse/hide.webp';
 
 export type MouseMood = 'peek' | 'run' | 'hide';
 
@@ -49,7 +49,7 @@ export default function Mouse({ mood }: Props) {
             <circle cx="75" cy="27" r="3.6" fill={PINK} stroke={LINE} strokeWidth="2" />
           </g>
         </svg>
-        <img key={mood} className="mascot-head head-swap" src={HEADS[mood]} alt="" draggable={false} decoding="sync" />
+        <img key={mood} className="mascot-head" src={HEADS[mood]} alt="" draggable={false} decoding="sync" />
       </div>
     </div>
   );
