@@ -3,7 +3,8 @@
 export type WalkSpeed = 'slow' | 'normal' | 'fast';
 /** 'preset' = a drawn face from the character library, 'photo' = the user's own (cartoonised) photo. */
 export type AvatarKind = 'preset' | 'photo';
-export type CharacterKind = 'animal' | 'human';
+/** 'vrm' = a 3D anime avatar loaded from the user's own .vrm file. */
+export type CharacterKind = 'animal' | 'human' | 'vrm';
 export type Sex = 'male' | 'female';
 export type OutfitStyle = 'pants' | 'skirt' | 'dress';
 export type Accessory = 'none' | 'bottle' | 'scarf' | 'backpack' | 'bowtie';
@@ -48,6 +49,12 @@ export interface Settings {
   photoOriginal: string | null;
   /** Look applied to the photo face: anime (default), comic, or the original photo. */
   photoStyle: 'anime' | 'comic' | 'none';
+  /** File name of the imported .vrm avatar (the file itself is stored next to settings.json). */
+  vrmName: string | null;
+  /** Prompt for the optional AI anime avatar (photo → anime character). */
+  aiPrompt: string;
+  /** Desktop-pet mode: the 3D avatar wanders around the bottom of the screen between reminders. */
+  petMode: boolean;
   launchAtLogin: boolean;
 }
 
@@ -62,6 +69,12 @@ export interface AppState {
   settings: Settings;
   stats: Stats;
 }
+
+export const DEFAULT_AI_PROMPT =
+  'Transform the person in the uploaded photo into a cute, high-quality anime character avatar. Preserve the exact facial ' +
+  'structure, features, and hairstyle from the original photo. Update the outfit to stylish modern tech-wear, add cute hair ' +
+  'accessories and subtle jewelry, and give the character a charming expression with vibrant anime lighting. ' +
+  'Head-and-shoulders portrait, facing the viewer, plain light background.';
 
 export const DEFAULT_SETTINGS: Settings = {
   remindersEnabled: true,
@@ -84,6 +97,9 @@ export const DEFAULT_SETTINGS: Settings = {
   photo: null,
   photoOriginal: null,
   photoStyle: 'anime',
+  vrmName: null,
+  aiPrompt: DEFAULT_AI_PROMPT,
+  petMode: false,
   launchAtLogin: false,
 };
 
@@ -122,7 +138,7 @@ export function sanitizeSettings(input: unknown, base: Settings = DEFAULT_SETTIN
     dailyGoal: clamp(i.dailyGoal ?? base.dailyGoal, LIMITS.dailyGoal, base.dailyGoal),
     buddyName:
       typeof i.buddyName === 'string' && i.buddyName.trim() ? i.buddyName.trim().slice(0, 24) : base.buddyName,
-    character: i.character === 'animal' || i.character === 'human' ? i.character : base.character,
+    character: i.character === 'animal' || i.character === 'human' || i.character === 'vrm' ? i.character : base.character,
     animal: (ANIMALS as readonly string[]).includes(i.animal as string) ? (i.animal as Settings['animal']) : base.animal,
     sex: i.sex === 'male' || i.sex === 'female' ? i.sex : base.sex,
     humanStyle: [...HUMAN_STYLES.male, ...HUMAN_STYLES.female].includes(i.humanStyle as string)
@@ -141,6 +157,9 @@ export function sanitizeSettings(input: unknown, base: Settings = DEFAULT_SETTIN
     photo: validImage(i.photo) ? (i.photo ?? null) : base.photo,
     photoOriginal: validImage(i.photoOriginal) ? (i.photoOriginal ?? null) : base.photoOriginal,
     photoStyle: ['anime', 'comic', 'none'].includes(i.photoStyle as string) ? (i.photoStyle as Settings['photoStyle']) : base.photoStyle,
+    vrmName: i.vrmName === null || typeof i.vrmName === 'string' ? (i.vrmName === undefined ? base.vrmName : i.vrmName?.slice(0, 120) ?? null) : base.vrmName,
+    aiPrompt: typeof i.aiPrompt === 'string' && i.aiPrompt.trim() ? i.aiPrompt.slice(0, 4000) : base.aiPrompt,
+    petMode: typeof i.petMode === 'boolean' ? i.petMode : base.petMode,
     launchAtLogin: typeof i.launchAtLogin === 'boolean' ? i.launchAtLogin : base.launchAtLogin,
   };
 }

@@ -92,6 +92,27 @@ Open **💧 → Settings…** from the menu bar (Mac) or system tray (Windows).
 
 Settings save automatically and apply right away.
 
+## 🧊 3D anime avatar & desktop pet
+
+Pick **🧊 3D anime** in *Your buddy* and import any `.vrm` model (for example one you made for free in **VRoid Studio**). Your 3D character then:
+
+- walks in, turns to face you and talks while it asks, waves and runs off when you say **Yes**, and walks home sadly when you say **No**;
+- turns its whole body smoothly, blinks, breathes, and follows your pointer with its head and eyes;
+- has hair and clothes that sway as it moves;
+- can wave, look surprised, think, and show joy, sorrow, anger and more (try them in the live preview).
+
+Turn on **Desktop pet** and it wanders around the bottom of your screen between reminders, stopping now and then to wave or think, and jumps back in surprise if you dash the pointer at it. The 3D engine only loads when you use a 3D avatar, so the default buddy stays light.
+
+Want to build or tune your own model? See the [3D avatar guide](docs/VRM_GUIDE.md).
+
+## ✨ AI anime avatar (upload your own photo)
+
+In *Your buddy*, press **✨ AI anime avatar…**, upload your photo and press **Generate**. The ready-made prompt turns you into a cute, high-quality anime character with your facial structure and hairstyle, a modern tech-wear outfit, hair accessories, subtle jewellery and vibrant anime lighting. You can edit the prompt freely. Press **Use as my face →** to crop the result to face and hair and put it on your buddy.
+
+- It uses **your own OpenAI API key** (image model `gpt-image-1`); each image is billed to your OpenAI account.
+- The key is stored encrypted on your computer (or kept only until you quit, if the system has no secure storage). You can remove it any time.
+- 🔒 Your photo leaves your computer **only** when you press Generate, and only goes to OpenAI.
+
 ## Screenshots
 
 <table>
@@ -199,6 +220,6 @@ You can also create installers for Windows and both Mac types by publishing a re
 
 ## Credits
 
-All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
+All character head and expression artwork (animals, people and Pip) comes from [page-mascot](https://github.com/nilbuild/page-mascot) by Kamran Ahmed, used under the MIT License (see `src/assets/mascot/LICENSE-page-mascot`). `scripts/build_mascots.py` prepares the frames. 3D avatars use [three.js](https://threejs.org) and [three-vrm](https://github.com/pixiv/three-vrm) (MIT). The full bodies, outfits, accessories, head-turn animation and photo filters were made for WaterBuddy.
 
 <div align="center"><sub>Stay hydrated 💧</sub></div>

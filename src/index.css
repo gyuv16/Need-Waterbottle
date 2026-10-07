@@ -51,6 +51,13 @@ body,
   50%      { transform: scaleX(0.75); opacity: 0.5; }
 }
 
+/* ---------- 3D avatar ---------- */
+.actor--vrm { width: 200px; }
+.actor--vrm .bubble { left: 96px; bottom: 286px; }
+.actor--vrm .ground-shadow { bottom: -2px; }
+.vrm-canvas { display: block; }
+.pet { position: absolute; left: 0; top: 0; will-change: transform; }
+
 /* ---------- Speech bubbles ---------- */
 .bubble {
   position: absolute;

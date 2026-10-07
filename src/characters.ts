@@ -26,7 +26,7 @@ export const LABELS: Record<string, string> = {
 
 /** Everything the figure needs to draw itself, resolved from the user's settings. */
 export interface Look {
-  kind: 'animal' | 'human';
+  kind: 'animal' | 'human' | 'vrm';
   id: string;
   /** Custom (cartoonised) photo used as the face instead of the drawn head. */
   photo: string | null;
@@ -48,8 +48,9 @@ export function resolveLook(s: Settings): Look {
   const animal = animals[s.animal] ?? animals.cat;
   const human = humans.find((h) => h.id === s.humanStyle) ?? humans[0];
   return {
-    kind: s.character,
-    id: s.character === 'animal' ? s.animal : human.id,
+    // Without an imported .vrm file, the 3D option falls back to the drawn cat.
+    kind: s.character === 'vrm' && !s.vrmName ? 'animal' : s.character,
+    id: s.character === 'human' ? human.id : s.character === 'vrm' && s.vrmName ? 'vrm' : s.animal,
     photo,
     fur: animal.body,
     belly: animal.belly,

@@ -1,0 +1,170 @@
+import { useEffect, useRef, useState } from 'react';
+
+interface Props {
+  prompt: string;
+  onPromptChange: (prompt: string) => void;
+  /** Hand the generated portrait to the face editor (auto face + hair crop). */
+  onUse: (file: File) => void;
+  onClose: () => void;
+}
+
+/**
+ * ✨ AI anime avatar: upload your own photo and an image model redraws you as an anime character
+ * from the prompt (outfit, accessories, lighting…). Uses the user's own OpenAI API key; the photo
+ * is sent only when "Generate" is pressed.
+ */
+export default function AiAvatarPanel({ prompt, onPromptChange, onUse, onClose }: Props) {
+  const [hasKey, setHasKey] = useState<boolean | null>(null);
+  const [note, setNote] = useState('');
+  const [keyDraft, setKeyDraft] = useState('');
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoUrl, setPhotoUrl] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState('');
+  const input = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    window.waterBuddy.aiHasKey().then(setHasKey);
+  }, []);
+  useEffect(() => {
+    if (!photo) return;
+    const url = URL.createObjectURL(photo);
+    setPhotoUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [photo]);
+
+  const saveKey = async () => {
+    setError('');
+    try {
+      const where = await window.waterBuddy.aiSetKey(keyDraft.trim());
+      setKeyDraft('');
+      setHasKey(true);
+      setNote(where === 'session' ? 'No secure key storage on this computer: the key is kept only until WaterBuddy quits.' : 'Key saved securely.');
+    } catch (e) {
+      setError(e instanceof Error ? e.message.replace(/^.*Error: /, '') : 'Could not save the key.');
+    }
+  };
+
+  const generate = async () => {
+    if (!photo) return;
+    setBusy(true);
+    setError('');
+    setResult('');
+    const res = await window.waterBuddy.aiGenerate({ image: await photo.arrayBuffer(), mime: photo.type, prompt });
+    setBusy(false);
+    if (res.ok && res.dataUrl) setResult(res.dataUrl);
+    else setError(res.error ?? 'Something went wrong.');
+  };
+
+  const use = async () => {
+    const blob = await (await fetch(result)).blob();
+    onUse(new File([blob], 'anime-avatar.png', { type: 'image/png' }));
+  };
+
+  return (
+    <div className="space-y-3 rounded-2xl bg-gradient-to-br from-fuchsia-50 to-sky-50 p-4 ring-1 ring-fuchsia-200">
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-bold text-slate-800">✨ AI anime avatar from your photo</h3>
+        <button className="text-xs font-semibold text-slate-500 hover:text-slate-700" onClick={onClose}>
+          Close
+        </button>
+      </div>
+
+      {hasKey === false && (
+        <div className="space-y-2 rounded-xl bg-white p-3 text-xs text-slate-600 ring-1 ring-slate-200">
+          <p>
+            This uses an AI image model (OpenAI <b>gpt-image-1</b>) with <b>your own API key</b>. The key is stored encrypted on this computer.
+            Create one at platform.openai.com → API keys. Generating an image is billed to your OpenAI account.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              value={keyDraft}
+              onChange={(e) => setKeyDraft(e.target.value)}
+              placeholder="sk-…"
+              className="min-w-0 flex-1 rounded-lg border border-slate-300 px-2 py-1.5 text-sm"
+              aria-label="OpenAI API key"
+            />
+            <button className="rounded-lg bg-slate-900 px-3 text-sm font-semibold text-white disabled:opacity-40" disabled={!keyDraft.trim()} onClick={saveKey}>
+              Save key
+            </button>
+          </div>
+        </div>
+      )}
+
+      <label className="block text-xs font-semibold text-slate-600">
+        Prompt
+        <textarea
+          value={prompt}
+          onChange={(e) => onPromptChange(e.target.value)}
+          rows={4}
+          className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-normal text-slate-700"
+        />
+      </label>
+
+      <div className="flex items-start gap-3">
+        <button
+          onClick={() => input.current?.click()}
+          className="grid h-28 w-24 shrink-0 place-items-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white text-xs text-slate-500 hover:border-sky-400"
+        >
+          {photoUrl ? <img src={photoUrl} alt="Your photo" className="h-full w-full object-cover" /> : <span>📷<br />Upload your photo</span>}
+        </button>
+        <input
+          ref={input}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            e.target.value = '';
+            if (f) {
+              setPhoto(f);
+              setResult('');
+            }
+          }}
+        />
+        <div className="flex h-28 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-center text-[11px] text-slate-400 ring-1 ring-slate-200">
+          {busy ? (
+            <span className="animate-pulse">Drawing your<br />anime self…<br />(up to a minute)</span>
+          ) : result ? (
+            <img src={result} alt="Generated anime avatar" className="h-full w-full object-cover" />
+          ) : (
+            'Result'
+          )}
+        </div>
+        <div className="min-w-0 flex-1 space-y-2">
+          <button
+            className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-sky-500 px-4 py-2 text-sm font-semibold text-white shadow disabled:opacity-40"
+            disabled={!photo || !hasKey || busy || !prompt.trim()}
+            onClick={generate}
+          >
+            {busy ? 'Generating…' : result ? '↻ Generate again' : '✨ Generate'}
+          </button>
+          {result && (
+            <button className="w-full rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white" onClick={use}>
+              Use as my face →
+            </button>
+          )}
+          {hasKey && (
+            <button
+              className="text-[11px] text-slate-500 underline"
+              onClick={async () => {
+                await window.waterBuddy.aiSetKey(null);
+                setHasKey(false);
+              }}
+            >
+              Remove saved API key
+            </button>
+          )}
+        </div>
+      </div>
+      {note && !error && <p className="text-xs text-emerald-700">{note}</p>}
+      {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
+      <p className="text-[11px] leading-snug text-slate-500">
+        🔒 Your photo is sent to OpenAI only when you press Generate, to create the image. Nothing is uploaded otherwise. The result is cropped to face
+        and hair and placed on your buddy; you can adjust the crop next.
+      </p>
+    </div>
+  );
+}

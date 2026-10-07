@@ -1,5 +1,6 @@
-import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain, globalShortcut } from 'electron';
+import { app, BrowserWindow, screen, Tray, Menu, nativeImage, ipcMain, globalShortcut, safeStorage } from 'electron';
 import path from 'path';
+import fs from 'fs';
 import { getState, loadState, recordAnswer, resetToday, updateSettings } from './store';
 import type { AppState, Settings } from './shared/settings';
 
@@ -154,7 +155,9 @@ function registerIpc(): void {
   // The overlay is hidden between reminders; the scene shows it when it starts and hides it when done.
   ipcMain.on('overlay:active', (_event, active: boolean) => {
     if (!overlay) return;
-    if (active) {
+    // Desktop-pet mode keeps the overlay visible so the 3D avatar can wander between reminders.
+    const pet = getState().settings.petMode && getState().settings.character === 'vrm' && !!getState().settings.vrmName;
+    if (active || pet) {
       overlay.setAlwaysOnTop(true, 'screen-saver', 1);
       overlay.showInactive();
     } else {
@@ -179,6 +182,94 @@ function registerIpc(): void {
     const state = resetToday();
     broadcast(state);
     return state;
+  });
+  // 3D avatar: the .vrm file is stored next to settings.json (it can be tens of MB).
+  const vrmPath = () => path.join(app.getPath('userData'), 'avatar.vrm');
+  ipcMain.handle('vrm:save', (_event, data: ArrayBuffer, name: string) => {
+    const buf = Buffer.from(data);
+    // VRM files are binary glTF: they start with "glTF".
+    if (buf.length < 20 || buf.length > 120 * 1024 * 1024 || buf.toString('ascii', 0, 4) !== 'glTF') {
+      throw new Error('That file is not a VRM avatar (.vrm).');
+    }
+    fs.writeFileSync(vrmPath(), buf);
+    const state = updateSettings({ vrmName: String(name).slice(0, 120), character: 'vrm' });
+    broadcast(state);
+    for (const win of BrowserWindow.getAllWindows()) win.webContents.send('vrm-changed');
+    return state;
+  });
+  ipcMain.handle('vrm:load', () => {
+    try {
+      const buf = fs.readFileSync(vrmPath());
+      return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+    } catch {
+      return null;
+    }
+  });
+  // ---- AI anime avatar (optional, user's own OpenAI key) ---------------------------------------
+  // The key is encrypted with the OS keychain (safeStorage) and never leaves the main process.
+  // A photo is sent to OpenAI only when the user presses "Generate" in Settings.
+  const keyPath = () => path.join(app.getPath('userData'), 'ai-key.bin');
+  // Without an OS keychain the key is only kept in memory for this session (never written in plain text).
+  let sessionKey: string | null = null;
+  const readKey = (): string | null => {
+    if (sessionKey) return sessionKey;
+    try {
+      const enc = fs.readFileSync(keyPath());
+      return safeStorage.isEncryptionAvailable() ? safeStorage.decryptString(enc) : null;
+    } catch {
+      return null;
+    }
+  };
+  ipcMain.handle('ai:hasKey', () => !!readKey());
+  ipcMain.handle('ai:setKey', (_event, key: string | null): 'saved' | 'session' | 'removed' => {
+    if (!key) {
+      sessionKey = null;
+      fs.rmSync(keyPath(), { force: true });
+      return 'removed';
+    }
+    if (!safeStorage.isEncryptionAvailable()) {
+      sessionKey = String(key).trim();
+      return 'session';
+    }
+    fs.writeFileSync(keyPath(), safeStorage.encryptString(String(key).trim()));
+    return 'saved';
+  });
+  ipcMain.handle('ai:generate', async (_event, req: { image: ArrayBuffer; mime: string; prompt: string }) => {
+    const key = readKey();
+    if (!key) return { ok: false, error: 'Add your OpenAI API key first.' };
+    const bytes = Buffer.from(req.image);
+    if (bytes.length === 0 || bytes.length > 25 * 1024 * 1024) return { ok: false, error: 'Use a photo under 25 MB.' };
+    const mime = ['image/png', 'image/jpeg', 'image/webp'].includes(req.mime) ? req.mime : 'image/png';
+    const form = new FormData();
+    form.append('model', 'gpt-image-1');
+    form.append('prompt', String(req.prompt).slice(0, 4000));
+    form.append('size', '1024x1024');
+    form.append('quality', 'high');
+    form.append('image', new Blob([bytes], { type: mime }), `photo.${mime.split('/')[1]}`);
+    try {
+      const res = await fetch('https://api.openai.com/v1/images/edits', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}` },
+        body: form,
+        signal: AbortSignal.timeout(180_000),
+      });
+      const json = (await res.json().catch(() => ({}))) as { data?: { b64_json?: string }[]; error?: { message?: string } };
+      if (!res.ok) {
+        const friendly: Record<number, string> = {
+          401: 'That API key was not accepted. Check it at platform.openai.com → API keys.',
+          403: 'Access was refused (the key may lack image access, or the service is blocked on this network).',
+          429: 'Rate limit or credit limit reached on your OpenAI account. Try again later.',
+        };
+        const detail = json.error?.message;
+        return { ok: false, error: friendly[res.status] ?? detail ?? `The image service answered ${res.status}.` };
+      }
+      const b64 = json.data?.[0]?.b64_json;
+      if (!b64) return { ok: false, error: 'The image service returned no picture.' };
+      return { ok: true, dataUrl: `data:image/png;base64,${b64}` };
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: /timeout|abort/i.test(msg) ? 'The image service took too long. Try again.' : `Could not reach the image service (${msg}).` };
+    }
   });
   ipcMain.on('call-whiskers', callWhiskers);
   ipcMain.on('open-settings', openSettings);

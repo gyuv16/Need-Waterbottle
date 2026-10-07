@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import PhotoEditor, { STYLE_OPTIONS } from './PhotoEditor';
+import VrmPreview from './VrmPreview';
+import AiAvatarPanel from './AiAvatarPanel';
 import Buddy from '../Buddy';
 import { stylize, type PhotoStyle } from './photo';
 import { useAppState } from '../../useAppState';
@@ -131,6 +133,10 @@ export default function SettingsApp() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const fileInput = useRef<HTMLInputElement>(null);
+  const vrmInput = useRef<HTMLInputElement>(null);
+  const [vrmError, setVrmError] = useState('');
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiResultFile, setAiResultFile] = useState(false);
 
   // Follow changes made elsewhere (e.g. the tray's "Hourly reminders" checkbox).
   useEffect(() => setDraft(state.settings), [state.settings]);
@@ -285,11 +291,13 @@ export default function SettingsApp() {
       {/* Buddy */}
       <Section title="Your buddy" icon="🎨">
         <div className="flex gap-4">
-          <div className="buddy-preview shrink-0" title="Move your mouse around: the head follows it">
-            <div className="buddy-preview-stage">
-              <Buddy mood="ask" look={look} />
+          {draft.character !== 'vrm' && (
+            <div className="buddy-preview shrink-0" title="Move your mouse around: the head follows it">
+              <div className="buddy-preview-stage">
+                <Buddy mood="ask" look={look} />
+              </div>
             </div>
-          </div>
+          )}
           <div className="min-w-0 flex-1 space-y-3">
             <label className="block text-sm font-medium text-slate-700">
               Name
@@ -305,6 +313,7 @@ export default function SettingsApp() {
               options={[
                 { value: 'animal', label: '🐾 Animal' },
                 { value: 'human', label: '🙋 Human' },
+                { value: 'vrm', label: '🧊 3D anime' },
               ]}
               onChange={(v) => patch({ character: v as Settings['character'] }, 0)}
             />
@@ -332,96 +341,159 @@ export default function SettingsApp() {
           </div>
         </div>
 
-        <div>
-          <div className="mb-2 text-sm font-medium text-slate-700">Face</div>
-          <div className="grid grid-cols-6 gap-2">
-            {(draft.character === 'animal' ? ANIMALS : HUMAN_STYLES[draft.sex]).map((id) => {
-              const active = draft.avatar === 'preset' && (draft.character === 'animal' ? draft.animal === id : draft.humanStyle === id);
-              return (
-                <button
-                  key={id}
-                  title={LABELS[id]}
-                  onClick={() => patch(draft.character === 'animal' ? { animal: id as Settings['animal'], avatar: 'preset' } : { humanStyle: id, avatar: 'preset' }, 0)}
-                  className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${active ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
-                >
-                  <span className="h-14 w-14 overflow-hidden">
-                    <img src={headSrc(id, 'd4')} alt="" className="h-14 w-14 origin-[50%_85%] scale-[1.55] object-contain" />
-                  </span>
-                  <span className="text-[10px] font-semibold text-slate-600">{LABELS[id]}</span>
-                </button>
-              );
-            })}
-            <button
-              title="Use my photo"
-              onClick={() => (draft.photo ? patch({ avatar: 'photo' }, 0) : fileInput.current?.click())}
-              className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${draft.avatar === 'photo' ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
-            >
-              {draft.photo ? (
-                <img src={draft.photo} alt="" className="h-14 w-12 rounded-[50%] border-2 border-slate-900 object-cover" />
-              ) : (
-                <span className="grid h-14 w-12 place-items-center rounded-[50%] border-2 border-dashed border-slate-300 text-xl">📷</span>
-              )}
-              <span className="text-[10px] font-semibold text-slate-600">My photo</span>
-            </button>
-          </div>
-        </div>
-
-        <input
-          ref={fileInput}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"
-          className="hidden"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) setPhotoFile(f);
-            e.target.value = '';
-          }}
-        />
-        {photoFile ? (
-          <PhotoEditor
-            file={photoFile}
-            style={draft.photoStyle}
-            onCancel={() => setPhotoFile(null)}
-            onSave={({ photo, original, style }) => {
-              setPhotoFile(null);
-              patch({ photo, photoOriginal: original, photoStyle: style, avatar: 'photo' }, 0);
-            }}
-          />
-        ) : (
-          <div className="flex flex-wrap items-center gap-2">
-            <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700" onClick={() => fileInput.current?.click()}>
-              📷 {draft.photo ? 'New photo…' : 'Use my photo…'}
-            </button>
-            {draft.photo && (
-              <>
-                <div className="flex rounded-full bg-slate-100 p-0.5 text-xs">
-                  {STYLE_OPTIONS.map((o) => (
-                    <button
-                      key={o.value}
-                      onClick={async () => {
-                        const photo = draft.photoOriginal ? await restyle(draft.photoOriginal, o.value) : draft.photo;
-                        patch({ photoStyle: o.value, photo }, 0);
-                      }}
-                      className={`rounded-full px-2.5 py-1 font-semibold ${draft.photoStyle === o.value ? 'bg-white text-sky-700 shadow' : 'text-slate-500'}`}
-                    >
-                      {o.label}
-                    </button>
-                  ))}
-                </div>
-                <button className="rounded-full px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" onClick={() => patch({ photo: null, photoOriginal: null, avatar: 'preset' }, 0)}>
-                  Remove photo
-                </button>
-              </>
+        {draft.character === 'vrm' ? (
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700" onClick={() => vrmInput.current?.click()}>
+                🧊 {draft.vrmName ? 'Change 3D avatar…' : 'Import 3D avatar (.vrm)…'}
+              </button>
+              {draft.vrmName && <span className="truncate text-xs text-slate-500">{draft.vrmName}</span>}
+              {vrmError && <span className="text-xs font-semibold text-red-600">{vrmError}</span>}
+            </div>
+            <input
+              ref={vrmInput}
+              type="file"
+              accept=".vrm"
+              className="hidden"
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                e.target.value = '';
+                if (!f) return;
+                setVrmError('');
+                try {
+                  await window.waterBuddy.saveVrm(await f.arrayBuffer(), f.name);
+                } catch (err) {
+                  setVrmError(err instanceof Error ? err.message.replace(/^.*Error: /, '') : 'Could not import that file.');
+                }
+              }}
+            />
+            {draft.vrmName ? (
+              <VrmPreview />
+            ) : (
+              <p className="rounded-xl bg-sky-50 p-3 text-xs text-slate-600">
+                Import any VRM anime avatar. You can design your own for free in <b>VRoid Studio</b> (Windows / macOS), then use{' '}
+                <i>Export → VRM</i>. Hair and clothes sway with spring-bone physics, the face blinks and shows expressions, and the head
+                and eyes follow your pointer. Until you import one, the drawn cat is used.
+              </p>
             )}
           </div>
+        ) : (
+          <>
+        <div>
+            <div className="mb-2 text-sm font-medium text-slate-700">Face</div>
+            <div className="grid grid-cols-6 gap-2">
+              {(draft.character === 'animal' ? ANIMALS : HUMAN_STYLES[draft.sex]).map((id) => {
+                const active = draft.avatar === 'preset' && (draft.character === 'animal' ? draft.animal === id : draft.humanStyle === id);
+                return (
+                  <button
+                    key={id}
+                    title={LABELS[id]}
+                    onClick={() => patch(draft.character === 'animal' ? { animal: id as Settings['animal'], avatar: 'preset' } : { humanStyle: id, avatar: 'preset' }, 0)}
+                    className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${active ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
+                  >
+                    <span className="h-14 w-14 overflow-hidden">
+                      <img src={headSrc(id, 'd4')} alt="" className="h-14 w-14 origin-[50%_85%] scale-[1.55] object-contain" />
+                    </span>
+                    <span className="text-[10px] font-semibold text-slate-600">{LABELS[id]}</span>
+                  </button>
+                );
+              })}
+              <button
+                title="Use my photo"
+                onClick={() => (draft.photo ? patch({ avatar: 'photo' }, 0) : fileInput.current?.click())}
+                className={`flex flex-col items-center rounded-xl p-1 ring-2 transition ${draft.avatar === 'photo' ? 'bg-sky-50 ring-sky-500' : 'ring-transparent hover:bg-slate-50'}`}
+              >
+                {draft.photo ? (
+                  <img src={draft.photo} alt="" className="h-14 w-12 rounded-[50%] border-2 border-slate-900 object-cover" />
+                ) : (
+                  <span className="grid h-14 w-12 place-items-center rounded-[50%] border-2 border-dashed border-slate-300 text-xl">📷</span>
+                )}
+                <span className="text-[10px] font-semibold text-slate-600">My photo</span>
+              </button>
+            </div>
+          </div>
+  
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) setPhotoFile(f);
+              e.target.value = '';
+            }}
+          />
+          {aiOpen && !photoFile && (
+            <AiAvatarPanel
+              prompt={draft.aiPrompt}
+              onPromptChange={(p) => patch({ aiPrompt: p }, 800)}
+              onClose={() => setAiOpen(false)}
+              onUse={(file) => {
+                setAiOpen(false);
+                setAiResultFile(true);
+                setPhotoFile(file);
+              }}
+            />
+          )}
+          {photoFile ? (
+            <PhotoEditor
+              file={photoFile}
+              style={aiResultFile ? 'none' : draft.photoStyle}
+              onCancel={() => {
+                setPhotoFile(null);
+                setAiResultFile(false);
+              }}
+              onSave={({ photo, original, style }) => {
+                setPhotoFile(null);
+                setAiResultFile(false);
+                patch({ photo, photoOriginal: original, photoStyle: style, avatar: 'photo' }, 0);
+              }}
+            />
+          ) : (
+            <div className="flex flex-wrap items-center gap-2">
+              <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700" onClick={() => fileInput.current?.click()}>
+                📷 {draft.photo ? 'New photo…' : 'Use my photo…'}
+              </button>
+              <button
+                className="rounded-full bg-gradient-to-r from-fuchsia-500 to-sky-500 px-4 py-2 text-sm font-semibold text-white shadow hover:opacity-90"
+                onClick={() => setAiOpen((v) => !v)}
+              >
+                ✨ AI anime avatar…
+              </button>
+              {draft.photo && (
+                <>
+                  <div className="flex rounded-full bg-slate-100 p-0.5 text-xs">
+                    {STYLE_OPTIONS.map((o) => (
+                      <button
+                        key={o.value}
+                        onClick={async () => {
+                          const photo = draft.photoOriginal ? await restyle(draft.photoOriginal, o.value) : draft.photo;
+                          patch({ photoStyle: o.value, photo }, 0);
+                        }}
+                        className={`rounded-full px-2.5 py-1 font-semibold ${draft.photoStyle === o.value ? 'bg-white text-sky-700 shadow' : 'text-slate-500'}`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  <button className="rounded-full px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50" onClick={() => patch({ photo: null, photoOriginal: null, avatar: 'preset' }, 0)}>
+                    Remove photo
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+          <p className="text-xs text-slate-500">
+            Your photo is turned into an anime-style portrait (or comic / original), with the face and hair cropped automatically and placed on the figure. It never leaves this
+            computer.
+          </p>
+            </>
         )}
-        <p className="text-xs text-slate-500">
-          Your photo is turned into an anime-style portrait (or comic / original), with the face and hair cropped automatically and placed on the figure. It never leaves this
-          computer.
-        </p>
       </Section>
 
       {/* Outfit */}
+      {draft.character !== 'vrm' && (
       <Section title="Outfit & accessories" icon="👕">
         {draft.character === 'human' && (
           <>
@@ -468,6 +540,7 @@ export default function SettingsApp() {
           <ColorPick label="Accessory colour" value={draft.accessoryColor} onChange={(c) => patch({ accessoryColor: c })} />
         )}
       </Section>
+      )}
 
       {/* Animation */}
       <Section title="Animation" icon="🎬">
@@ -503,6 +576,9 @@ export default function SettingsApp() {
             className="w-full"
           />
         </div>
+        <Row label="Desktop pet (3D avatar)" hint={draft.character === 'vrm' && draft.vrmName ? 'Wanders along the bottom of your screen between reminders' : 'Needs a 3D anime avatar'}>
+          <Toggle label="Desktop pet" checked={draft.petMode} onChange={(v) => patch({ petMode: v }, 0)} />
+        </Row>
         <Row label="Pip the mouse" hint="Peeks out from behind and runs off when you say Yes">
           <Toggle label="Show mouse" checked={draft.showMouse} onChange={(v) => patch({ showMouse: v }, 0)} />
         </Row>
